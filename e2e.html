@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End-to-End Physical Design Flow: RTL to GDSII</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .nav-bar {
+            background: #0f3460;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9em;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .nav-bar a.active {
+            font-weight: bold;
+            border-bottom: 2px solid #64B5F6;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0a2540 0%, #0f3460 50%, #1a5f8a 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .header-banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .header-banner .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .header-banner .meta {
+            margin-top: 20px;
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        .view-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0a2540;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .view-counter span {
+            font-weight: bold;
+            color: #64B5F6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0a2540;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0f3460;
+        }
+        h3 {
+            color: #0f3460;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+        }
+        h4 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0f3460;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .toc {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .toc ol {
+            margin-left: 25px;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #0f3460;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .project-card {
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            border-left: 4px solid #0f3460;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .project-card h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .interview-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .interview-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tip-box h4 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .tags {
+            margin-top: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #0f3460;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85em;
+        }
+        .diagram {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        .blog-nav {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .blog-nav a {
+            color: #0f3460;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .blog-nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+        .flow-step {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            border-left: 4px solid #1976d2;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .flow-step h4 {
+            color: #1976d2;
+            margin: 0 0 10px 0;
+        }
+        .checklist {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .checklist h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .checklist li {
+            list-style: none;
+            margin: 8px 0;
+        }
+        .checklist li::before {
+            content: "☐ ";
+            color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">01: Floorplan</a>
+    <a href="routing.html">02: Routing</a>
+    <a href="clock-timing.html">03: Clock & Timing</a>
+    <a href="power.html">04: Power</a>
+    <a href="sta-verification.html">05: STA & DRC/LVS</a>
+    <a href="e2e.html" class="active">06: End-to-End</a>
+</div>
+
+<div class="header-banner">
+    <h1>End-to-End Physical Design Flow</h1>
+    <p class="subtitle">Complete RTL to GDSII Implementation of an Example Processor Core</p>
+    <p class="meta"><strong>Praveen Kumar Vagala</strong> | 35 min read</p>
+</div>
+
+<div class="view-counter">
+    Views: <span id="visit-count">1000</span>
+</div>
+
+<div class="container">
+
+    <h2>Introduction</h2>
+    <p>
+        This capstone project brings together all Physical Design concepts into a complete RTL-to-GDSII flow. You'll implement a sample processor core from synthesis through tapeout-ready GDSII, applying every technique learned in the previous chapters. This is the ultimate differentiator project for your portfolio.
+    </p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#overview">Complete PD Flow Overview</a></li>
+            <li><a href="#synthesis">Synthesis & Design Setup</a></li>
+            <li><a href="#floorplan">Floorplanning & Power Planning</a></li>
+            <li><a href="#placement">Placement & Optimization</a></li>
+            <li><a href="#cts">Clock Tree Synthesis</a></li>
+            <li><a href="#routing">Routing & Timing Closure</a></li>
+            <li><a href="#signoff">Physical Verification & Signoff</a></li>
+            <li><a href="#checklist">Tapeout Checklist</a></li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- Section 1: Overview -->
+    <div class="project-card" id="overview">
+        <h3>Complete RTL to GDSII Flow</h3>
+        <p><strong>Design:</strong> Example 32-bit Processor (5-stage pipeline)</p>
+        <p><strong>Technology:</strong> 45nm FreePDK / SKY130</p>
+        <p><strong>Tools:</strong> Genus, Innovus, PrimeTime, Calibre</p>
+    </div>
+
+    <h4>End-to-End Flow Diagram</h4>
+    <div class="diagram">                         RTL Design (Verilog)
+                                │
+                    ┌───────────┴───────────┐
+                    │      SYNTHESIS        │
+                    │    (Genus/DC)         │
+                    └───────────┬───────────┘
+                                │
+                         Gate-level Netlist
+                                │
+                    ┌───────────┴───────────┐
+                    │    FLOORPLANNING      │
+                    │  - Die/Core size      │
+                    │  - IO placement       │
+                    │  - Macro placement    │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │   POWER PLANNING      │
+                    │  - Power rings        │
+                    │  - Stripes            │
+                    │  - Rails              │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │     PLACEMENT         │
+                    │  - Global placement   │
+                    │  - Legalization       │
+                    │  - Optimization       │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │        CTS            │
+                    │  - Clock tree build   │
+                    │  - Skew balancing     │
+                    │  - Hold fixing        │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │      ROUTING          │
+                    │  - Global route       │
+                    │  - Detail route       │
+                    │  - SI fixing          │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │   TIMING CLOSURE      │
+                    │  - Post-route opt     │
+                    │  - ECO fixes          │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │  PHYSICAL VERIF       │
+                    │  - DRC                │
+                    │  - LVS                │
+                    │  - Antenna            │
+                    └───────────┬───────────┘
+                                │
+                         GDSII (Tapeout)</div>
+
+    <h4>Design Specifications</h4>
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Specification</th>
+        </tr>
+        <tr>
+            <td>Design</td>
+            <td>Example 32-bit Processor</td>
+        </tr>
+        <tr>
+            <td>Technology</td>
+            <td>45nm / SKY130</td>
+        </tr>
+        <tr>
+            <td>Target Frequency</td>
+            <td>500 MHz</td>
+        </tr>
+        <tr>
+            <td>Core Voltage</td>
+            <td>1.1V (nominal)</td>
+        </tr>
+        <tr>
+            <td>Target Utilization</td>
+            <td>70%</td>
+        </tr>
+        <tr>
+            <td>Power Budget</td>
+            <td>&lt; 50mW</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- Section 2: Synthesis -->
+    <div class="flow-step" id="synthesis">
+        <h4>Step 1: Synthesis & Design Setup</h4>
+        <p>Transform RTL to gate-level netlist with timing constraints</p>
+    </div>
+
+    <h4>Directory Structure</h4>
+    <pre>sample_pd/
+├── rtl/
+│   ├── sample_core.v
+│   ├── alu.v
+│   ├── register_file.v
+│   ├── decoder.v
+│   └── control.v
+├── constraints/
+│   └── sample.sdc
+├── scripts/
+│   ├── synthesis.tcl
+│   ├── pnr.tcl
+│   └── signoff.tcl
+├── libs/
+│   ├── std_cells.lib
+│   └── std_cells.lef
+├── outputs/
+│   ├── syn/
+│   ├── pnr/
+│   └── signoff/
+└── reports/</pre>
+
+    <h4>Synthesis Script (Genus)</h4>
+    <pre># synthesis.tcl - Genus Synthesis Script
+
+# Setup libraries
+set_db init_lib_search_path ./libs
+set_db library {slow.lib fast.lib}
+
+# Read RTL
+read_hdl -verilog ./rtl/sample_core.v
+read_hdl -verilog ./rtl/alu.v
+read_hdl -verilog ./rtl/register_file.v
+read_hdl -verilog ./rtl/decoder.v
+read_hdl -verilog ./rtl/control.v
+
+# Elaborate
+elaborate sample_core
+
+# Read constraints
+read_sdc ./constraints/sample.sdc
+
+# Synthesize
+set_db syn_generic_effort high
+set_db syn_map_effort high
+set_db syn_opt_effort high
+
+syn_generic
+syn_map
+syn_opt
+
+# Reports
+report_timing > ./reports/syn_timing.rpt
+report_power > ./reports/syn_power.rpt
+report_area > ./reports/syn_area.rpt
+report_qor > ./reports/syn_qor.rpt
+
+# Write outputs
+write_hdl > ./outputs/syn/sample_core_syn.v
+write_sdc > ./outputs/syn/sample_core_syn.sdc
+write_sdf > ./outputs/syn/sample_core_syn.sdf</pre>
+
+    <h4>SDC Constraints</h4>
+    <pre># sample.sdc - Timing Constraints
+
+# Clock definition (500 MHz = 2ns period)
+create_clock -name clk -period 2.0 [get_ports clk]
+set_clock_uncertainty -setup 0.1 [get_clocks clk]
+set_clock_uncertainty -hold 0.05 [get_clocks clk]
+set_clock_transition 0.1 [get_clocks clk]
+
+# Reset
+set_false_path -from [get_ports rst_n]
+
+# Input delays
+set_input_delay -clock clk -max 0.5 [all_inputs]
+set_input_delay -clock clk -min 0.1 [all_inputs]
+
+# Output delays
+set_output_delay -clock clk -max 0.5 [all_outputs]
+set_output_delay -clock clk -min 0.1 [all_outputs]
+
+# Driving cell and load
+set_driving_cell -lib_cell BUFX4 [all_inputs]
+set_load 0.05 [all_outputs]
+
+# Design rules
+set_max_transition 0.2 [current_design]
+set_max_capacitance 0.5 [current_design]
+set_max_fanout 20 [current_design]</pre>
+
+    <hr>
+
+    <!-- Section 3: Floorplan -->
+    <div class="flow-step" id="floorplan">
+        <h4>Step 2: Floorplanning & Power Planning</h4>
+        <p>Define physical boundaries and power distribution network</p>
+    </div>
+
+    <h4>Floorplan Script</h4>
+    <pre># pnr.tcl - Part 1: Floorplan
+
+# Initialize design
+set_db init_netlist_files ./outputs/syn/sample_core_syn.v
+set_db init_lef_files {./libs/tech.lef ./libs/std_cells.lef}
+set_db init_mmmc_files ./scripts/mmmc.tcl
+set_db init_power_nets VDD
+set_db init_ground_nets VSS
+
+init_design
+
+# Create floorplan
+# Die: 400x400um, Core: 350x350um
+floorPlan -site core -r 1.0 0.7 20 20 20 20
+
+# Define placement blockages for macros
+# (If design has SRAMs, place them here)
+# placeInstance u_sram 50 50 R0 -fixed
+
+# Create IO pin placement
+editPin -side Top -pin {instr[31:0]}
+editPin -side Bottom -pin {data_out[31:0]}
+editPin -side Left -pin {clk rst_n}
+editPin -side Right -pin {mem_addr[31:0]}
+
+# Add placement halos around macros
+# addHaloToBlock 5 5 5 5 -allMacros
+
+# Verify floorplan
+checkFPlan -reportUtil</pre>
+
+    <h4>Power Planning Script</h4>
+    <pre># pnr.tcl - Part 2: Power Planning
+
+# Global net connections
+globalNetConnect VDD -type pgpin -pin VDD -all
+globalNetConnect VSS -type pgpin -pin VSS -all
+
+# Create power rings
+addRing -nets {VDD VSS} \
+    -type core_rings \
+    -layer {top M5 bottom M5 left M4 right M4} \
+    -width {top 2 bottom 2 left 2 right 2} \
+    -spacing {top 0.5 bottom 0.5 left 0.5 right 0.5} \
+    -offset {top 1.8 bottom 1.8 left 1.8 right 1.8}
+
+# Create power stripes
+addStripe -nets {VDD VSS} \
+    -layer M5 \
+    -direction horizontal \
+    -width 1.0 \
+    -spacing 0.5 \
+    -set_to_set_distance 30 \
+    -start_from bottom
+
+addStripe -nets {VDD VSS} \
+    -layer M4 \
+    -direction vertical \
+    -width 1.0 \
+    -spacing 0.5 \
+    -set_to_set_distance 30 \
+    -start_from left
+
+# Route power to standard cell rails
+sroute -connect {corePin} \
+    -layerChangeRange {M1 M5} \
+    -nets {VDD VSS}
+
+# Verify power grid
+verifyConnectivity -type special -nets {VDD VSS}
+analyzeFloorplan -powerGrid</pre>
+
+    <hr>
+
+    <!-- Section 4: Placement -->
+    <div class="flow-step" id="placement">
+        <h4>Step 3: Placement & Optimization</h4>
+        <p>Place standard cells and optimize for timing/congestion</p>
+    </div>
+
+    <h4>Placement Script</h4>
+    <pre># pnr.tcl - Part 3: Placement
+
+# Set placement mode
+setPlaceMode -place_global_timing_effort high
+setPlaceMode -place_global_cong_effort high
+setPlaceMode -place_global_clock_gate_aware true
+
+# Run global placement
+place_opt_design
+
+# Check placement
+checkPlace
+
+# Report placement quality
+reportCongestion -hotSpot > ./reports/congestion.rpt
+timeDesign -preCTS > ./reports/timing_preCTS.rpt
+
+# Optimize placement for timing
+setOptMode -fixFanoutLoad true
+optDesign -preCTS
+
+# Add tie cells
+addTieHiLo -cell {TIEHI TIELO}
+
+# Add filler cells (will add after routing)
+# addFiller -cell {FILL1 FILL2 FILL4} -prefix FILLER
+
+# Verify placement
+verifyConnectivity -type regular
+report_design > ./reports/design_post_place.rpt</pre>
+
+    <hr>
+
+    <!-- Section 5: CTS -->
+    <div class="flow-step" id="cts">
+        <h4>Step 4: Clock Tree Synthesis</h4>
+        <p>Build balanced clock distribution network</p>
+    </div>
+
+    <h4>CTS Script</h4>
+    <pre># pnr.tcl - Part 4: Clock Tree Synthesis
+
+# Create CTS spec
+create_ccopt_clock_tree_spec -file ./scripts/cts_spec.tcl
+
+# Set CTS options
+set_ccopt_property target_max_trans 0.1
+set_ccopt_property target_skew 0.05
+set_ccopt_property buffer_cells {CLKBUF_X1 CLKBUF_X2 CLKBUF_X4 CLKBUF_X8}
+set_ccopt_property inverter_cells {CLKINV_X1 CLKINV_X2 CLKINV_X4}
+
+# Run CTS
+ccopt_design
+
+# Report CTS quality
+report_ccopt_clock_trees > ./reports/cts_trees.rpt
+report_ccopt_skew_groups > ./reports/cts_skew.rpt
+
+# Post-CTS timing
+timeDesign -postCTS > ./reports/timing_postCTS.rpt
+timeDesign -postCTS -hold > ./reports/timing_postCTS_hold.rpt
+
+# Fix hold violations
+setOptMode -fixHoldViolation true
+optDesign -postCTS -hold
+
+# Verify clock tree
+reportClockTree -summary > ./reports/cts_summary.rpt</pre>
+
+    <hr>
+
+    <!-- Section 6: Routing -->
+    <div class="flow-step" id="routing">
+        <h4>Step 5: Routing & Timing Closure</h4>
+        <p>Create metal connections and close timing</p>
+    </div>
+
+    <h4>Routing Script</h4>
+    <pre># pnr.tcl - Part 5: Routing
+
+# Set routing mode
+setNanoRouteMode -routeWithTimingDriven true
+setNanoRouteMode -routeWithSiDriven true
+setNanoRouteMode -routeTopRoutingLayer 5
+setNanoRouteMode -routeBottomRoutingLayer 1
+
+# Non-default rules for clock
+add_ndr -name CTS_NDR -width {M2:M4 0.1} -spacing {M2:M4 0.1}
+setAttribute -net clk -non_default_rule CTS_NDR
+
+# Run routing
+routeDesign -globalDetail
+
+# DRC fixing
+routeDesign -viaOpt
+routeDesign -wireOpt
+
+# Post-route optimization
+setAnalysisMode -analysisType onChipVariation
+setOptMode -fixDrc true
+setOptMode -fixHoldViolation true
+
+optDesign -postRoute
+optDesign -postRoute -hold
+
+# Extract parasitics
+setExtractRCMode -engine postRoute -coupled true
+extractRC
+
+# Final timing analysis
+timeDesign -postRoute -signOff > ./reports/timing_signoff.rpt
+timeDesign -postRoute -signOff -hold > ./reports/timing_signoff_hold.rpt
+
+# Report timing summary
+report_timing -max_paths 50 -slack_lesser_than 0 > ./reports/setup_violations.rpt
+report_timing -early -max_paths 50 -slack_lesser_than 0 > ./reports/hold_violations.rpt</pre>
+
+    <hr>
+
+    <!-- Section 7: Signoff -->
+    <div class="flow-step" id="signoff">
+        <h4>Step 6: Physical Verification & Signoff</h4>
+        <p>DRC, LVS, and final checks before tapeout</p>
+    </div>
+
+    <h4>Add Filler & Metal Fill</h4>
+    <pre># pnr.tcl - Part 6: Finishing
+
+# Add filler cells
+addFiller -cell {FILL64 FILL32 FILL16 FILL8 FILL4 FILL2 FILL1} \
+    -prefix FILLER
+
+# Add decoupling capacitors
+addFiller -cell {DCAP_X4 DCAP_X2 DCAP_X1} \
+    -prefix DCAP \
+    -density 0.1
+
+# Verify connectivity after filler
+verifyConnectivity -type all
+
+# Add metal fill for density
+addMetalFill -layer {M1 M2 M3 M4 M5} \
+    -minDensity 0.3 \
+    -maxDensity 0.7
+
+# Trim metal fill around signals
+trimMetalFill -layer {M1 M2 M3 M4 M5}</pre>
+
+    <h4>DRC & LVS Verification</h4>
+    <pre># signoff.tcl - Physical Verification
+
+# Run in-tool DRC
+verify_drc -report ./reports/drc_innovus.rpt
+
+# Run in-tool LVS (connectivity check)
+verifyConnectivity -type all -report ./reports/conn.rpt
+
+# Export for Calibre
+streamOut ./outputs/pnr/sample_core.gds \
+    -mapFile ./libs/streamOut.map \
+    -libName sample_design \
+    -units 1000 \
+    -mode ALL
+
+# Write netlist for LVS
+saveNetlist ./outputs/pnr/sample_core_lvs.v -excludeLeafCell
+
+# Calibre DRC (run externally)
+# calibre -drc -hier ./scripts/drc.cal
+
+# Calibre LVS (run externally)  
+# calibre -lvs -hier ./scripts/lvs.cal</pre>
+
+    <h4>Final Reports</h4>
+    <pre># Final QoR Report
+proc generate_final_reports {} {
+    # Timing
+    report_timing -max_paths 100 > ./reports/final_timing.rpt
+    
+    # Power
+    report_power -hierarchy all > ./reports/final_power.rpt
+    
+    # Area
+    report_area -detail > ./reports/final_area.rpt
+    
+    # Design summary
+    report_design -physical > ./reports/final_design.rpt
+    
+    # IR drop
+    analyzeIRDrop -net VDD > ./reports/final_irdrop.rpt
+    
+    puts "======================================"
+    puts "         FINAL QoR SUMMARY           "
+    puts "======================================"
+    puts "WNS: [get_property [current_design] worst_negative_slack]"
+    puts "TNS: [get_property [current_design] total_negative_slack]"
+    puts "Cell Count: [llength [get_cells *]]"
+    puts "Utilization: [get_property [current_design] utilization]%"
+    puts "======================================"
+}
+
+generate_final_reports</pre>
+
+    <hr>
+
+    <!-- Section 8: Checklist -->
+    <div class="checklist" id="checklist">
+        <h4>✅ Tapeout Readiness Checklist</h4>
+        <ul>
+            <li>Synthesis completed with no errors</li>
+            <li>Floorplan meets utilization target (70%)</li>
+            <li>Power grid EM/IR analysis passed</li>
+            <li>Placement congestion &lt; 80%</li>
+            <li>CTS skew &lt; 50ps</li>
+            <li>All setup violations fixed (WNS ≥ 0)</li>
+            <li>All hold violations fixed</li>
+            <li>DRC clean (0 violations)</li>
+            <li>LVS clean (CORRECT)</li>
+            <li>Antenna check passed</li>
+            <li>Metal density within limits</li>
+            <li>ERC check passed (no floating nets)</li>
+            <li>GDSII generated and verified</li>
+        </ul>
+    </div>
+
+    <h4>Signoff Metrics Summary</h4>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Target</th>
+            <th>Achieved</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Frequency</td>
+            <td>500 MHz</td>
+            <td>520 MHz</td>
+            <td>✅ PASS</td>
+        </tr>
+        <tr>
+            <td>Setup WNS</td>
+            <td>≥ 0 ns</td>
+            <td>+0.05 ns</td>
+            <td>✅ PASS</td>
+        </tr>
+        <tr>
+            <td>Hold WNS</td>
+            <td>≥ 0 ns</td>
+            <td>+0.02 ns</td>
+            <td>✅ PASS</td>
+        </tr>
+        <tr>
+            <td>Power</td>
+            <td>&lt; 50 mW</td>
+            <td>42 mW</td>
+            <td>✅ PASS</td>
+        </tr>
+        <tr>
+            <td>Utilization</td>
+            <td>70%</td>
+            <td>68%</td>
+            <td>✅ PASS</td>
+        </tr>
+        <tr>
+            <td>DRC</td>
+            <td>0</td>
+            <td>0</td>
+            <td>✅ CLEAN</td>
+        </tr>
+        <tr>
+            <td>LVS</td>
+            <td>CORRECT</td>
+            <td>CORRECT</td>
+            <td>✅ CLEAN</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div class="interview-box">
+        <h3>End-to-End Flow Interview Questions</h3>
+        <ol>
+            <li><strong>Walk me through the PD flow from RTL to GDSII.</strong> - Synthesis → Floorplan → Power Plan → Placement → CTS → Routing → Signoff</li>
+            <li><strong>What are the key inputs to PnR?</strong> - Gate-level netlist, SDC, LEF/LIB, tech files</li>
+            <li><strong>How do you ensure timing closure?</strong> - Iterative optimization, ECO fixes, proper constraints</li>
+            <li><strong>What checks are done before tapeout?</strong> - DRC, LVS, ERC, Antenna, Density, IR drop</li>
+            <li><strong>How do you debug a timing violation?</strong> - Analyze path, identify bottleneck, apply ECO (resize/buffer/reroute)</li>
+        </ol>
+    </div>
+
+    <div class="tip-box">
+        <h4>💡 Key Takeaways</h4>
+        <ul>
+            <li>Always verify after each major step (don't wait until signoff)</li>
+            <li>Start with conservative targets, then optimize</li>
+            <li>Document all exceptions and waivers</li>
+            <li>Maintain version control for all scripts and databases</li>
+            <li>Cross-check timing between tools (Innovus vs PrimeTime)</li>
+        </ul>
+    </div>
+
+    <h2>Congratulations!</h2>
+    <p>
+        You've completed the entire Physical Design blog series! You now have a solid foundation in all aspects of PD from floorplanning to tapeout. Use this knowledge to build your portfolio and ace your interviews.
+    </p>
+
+    <div class="blog-nav">
+        <a href="sta-verification.html">← Previous: STA & Physical Verification</a>
+        <a href="index.html">Back to Chapter 01 →</a>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#PhysicalDesign</span>
+        <span class="tag">#RTLtoGDSII</span>
+        <span class="tag">#Processor</span>
+        <span class="tag">#Tapeout</span>
+        <span class="tag">#VLSI</span>
+        <span class="tag">#Innovus</span>
+        <span class="tag">#Signoff</span>
+    </div>
+
+</div>
+
+<footer>
+    <p>Physical Design examples are for educational purposes. Verify with your foundry PDK.</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://vlsi-blog-counter-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const counterRef = ref(database, 'pd06Views');
+
+    runTransaction(counterRef, (currentValue) => {
+        if (currentValue === null) return 1000;
+        return currentValue + 1;
+    }).then((result) => {
+        document.getElementById('visit-count').textContent = result.snapshot.val();
+    }).catch((error) => {
+        document.getElementById('visit-count').textContent = '1000+';
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floorplanning & Placement Projects for Physical Design Engineers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .nav-bar {
+            background: #0f3460;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9em;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .nav-bar a.active {
+            font-weight: bold;
+            border-bottom: 2px solid #64B5F6;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0a2540 0%, #0f3460 50%, #1a5f8a 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .header-banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .header-banner .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .header-banner .meta {
+            margin-top: 20px;
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        .view-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0a2540;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .view-counter span {
+            font-weight: bold;
+            color: #64B5F6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0a2540;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0f3460;
+        }
+        h3 {
+            color: #0f3460;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+        }
+        h4 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0f3460;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .toc {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .toc ol {
+            margin-left: 25px;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #0f3460;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .project-card {
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            border-left: 4px solid #0f3460;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .project-card h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .interview-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .interview-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tip-box h4 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .tags {
+            margin-top: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #0f3460;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85em;
+        }
+        .diagram {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        .blog-nav {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .blog-nav a {
+            color: #0f3460;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .blog-nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html" class="active">01: Floorplan</a>
+    <a href="routing.html">02: Routing</a>
+    <a href="clock-timing.html">03: Clock & Timing</a>
+    <a href="power.html">04: Power</a>
+    <a href="sta-verification.html">05: STA & DRC/LVS</a>
+    <a href="e2e.html">06: End-to-End</a>
+</div>
+
+<div class="header-banner">
+    <h1>Floorplanning & Placement Projects</h1>
+    <p class="subtitle">Master Physical Design Fundamentals with Industry-Ready Projects</p>
+    <p class="meta"><strong>Praveen Kumar Vagala</strong> | 20 min read</p>
+</div>
+
+<div class="view-counter">
+    Views: <span id="visit-count">1000</span>
+</div>
+
+<div class="container">
+
+    <h2>Introduction</h2>
+    <p>
+        Floorplanning and placement are the foundation of physical design. A well-planned floorplan directly impacts timing closure, power distribution, and routability. This blog covers 5 essential projects that demonstrate mastery of these critical PD skills using industry-standard tools like Innovus, ICC2, and OpenROAD.
+    </p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#floorplan-subsystem">Floorplanning of SoC Subsystem</a></li>
+            <li><a href="#macro-placement">Macro Placement for Memory-Intensive Block</a></li>
+            <li><a href="#std-cell">Standard Cell Placement Optimization</a></li>
+            <li><a href="#aspect-ratio">Aspect Ratio Optimization for SoC Block</a></li>
+            <li><a href="#pin-placement">Pin Placement Optimization for Timing Critical Module</a></li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- Project 1: SoC Subsystem Floorplanning -->
+    <div class="project-card" id="floorplan-subsystem">
+        <h3>1. Floorplanning of SoC Subsystem</h3>
+        <p><strong>Key Learning:</strong> Hierarchical floorplanning, partition strategy, channel estimation</p>
+        <p><strong>Tools:</strong> Innovus / ICC2 / OpenROAD</p>
+    </div>
+
+    <h4>Project Overview</h4>
+    <p>Create a floorplan for an SoC subsystem containing CPU core, L1 cache, interrupt controller, and debug module. This project teaches hierarchical design planning and macro arrangement.</p>
+
+    <h4>Block Diagram</h4>
+    <div class="diagram">+----------------------------------------------------------+
+|                    SoC Subsystem                          |
+|  +----------------+  +----------------+  +-------------+  |
+|  |                |  |                |  |             |  |
+|  |   CPU Core     |  |   L1 I-Cache   |  |   L1 D-Cache|  |
+|  |   (Soft Logic) |  |   (SRAM)       |  |   (SRAM)    |  |
+|  |                |  |   32KB         |  |   32KB      |  |
+|  +----------------+  +----------------+  +-------------+  |
+|                                                           |
+|  +----------------+  +----------------+  +-------------+  |
+|  |   Interrupt    |  |    Debug       |  |   Timer     |  |
+|  |   Controller   |  |    Module      |  |   Unit      |  |
+|  +----------------+  +----------------+  +-------------+  |
+|                                                           |
+|  [====================================================]   |
+|                    AHB-Lite Bus                           |
++----------------------------------------------------------+</div>
+
+    <h4>Floorplan TCL Script (Innovus)</h4>
+    <pre># Initialize floorplan
+floorPlan -site core -r 1.0 0.7 20 20 20 20
+
+# Define die and core area
+# Die: 1000um x 1000um, Core utilization: 70%
+set die_width 1000
+set die_height 1000
+set core_margin 20
+
+# Create floorplan
+createFloorplan -coreMarginsBy die \
+    -die "0 0 $die_width $die_height" \
+    -core "[expr $core_margin] [expr $core_margin] \
+           [expr $die_width - $core_margin] \
+           [expr $die_height - $core_margin]"
+
+# Place SRAM macros - L1 I-Cache (top-left)
+createInstGroup icache_grp -region "30 700 300 970"
+addInstToInstGroup icache_grp {u_icache/u_sram*}
+placeInstance u_icache/u_sram_bank0 40 800 R0
+placeInstance u_icache/u_sram_bank1 40 850 R0
+
+# Place SRAM macros - L1 D-Cache (top-right)
+createInstGroup dcache_grp -region "700 700 970 970"
+addInstToInstGroup dcache_grp {u_dcache/u_sram*}
+placeInstance u_dcache/u_sram_bank0 750 800 R0
+placeInstance u_dcache/u_sram_bank1 750 850 R0
+
+# Create placement blockages around macros
+createPlaceBlockage -box {30 690 310 980} -type hard
+createPlaceBlockage -box {690 690 980 980} -type hard
+
+# Add halo around macros for routing
+addHaloToBlock 5 5 5 5 -allMacros
+
+# Create power rings
+addRing -nets {VDD VSS} -width 3 -spacing 1 \
+    -layer {top M5 bottom M5 left M6 right M6}
+
+# Create power stripes
+addStripe -nets {VDD VSS} -layer M6 -direction vertical \
+    -width 2 -spacing 2 -set_to_set_distance 100 \
+    -start_from left -start_offset 50
+
+# Special route for power connections
+sroute -connect blockPin -blockPinTarget nearestTarget \
+    -nets {VDD VSS}</pre>
+
+    <h4>Macro Placement Guidelines</h4>
+    <table>
+        <tr>
+            <th>Guideline</th>
+            <th>Reason</th>
+            <th>Implementation</th>
+        </tr>
+        <tr>
+            <td>Place macros at periphery</td>
+            <td>Maximize std cell area</td>
+            <td>SRAM at top corners</td>
+        </tr>
+        <tr>
+            <td>Align macro pins</td>
+            <td>Reduce routing congestion</td>
+            <td>Data pins facing center</td>
+        </tr>
+        <tr>
+            <td>Add halo/blockage</td>
+            <td>Prevent DRC, allow routing</td>
+            <td>5µm halo around SRAMs</td>
+        </tr>
+        <tr>
+            <td>Consider dataflow</td>
+            <td>Minimize wire length</td>
+            <td>Cache near CPU core</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- Project 2: Macro Placement -->
+    <div class="project-card" id="macro-placement">
+        <h3>2. Macro Placement for Memory-Intensive Block</h3>
+        <p><strong>Key Learning:</strong> Channel planning, pin accessibility, congestion avoidance</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>Challenge</h4>
+    <p>Design a memory controller block with 16 SRAM macros (64KB each = 1MB total). The challenge is arranging macros to minimize wire length while ensuring routability.</p>
+
+    <h4>Macro Array Configuration</h4>
+    <div class="diagram">+------------------------------------------------------------------+
+|                     Memory Controller Block                       |
+|                                                                   |
+|  +------+ +------+ +------+ +------+   +------+ +------+ +------+ +------+  |
+|  |SRAM_0| |SRAM_1| |SRAM_2| |SRAM_3|   |SRAM_4| |SRAM_5| |SRAM_6| |SRAM_7|  |
+|  | 64KB | | 64KB | | 64KB | | 64KB |   | 64KB | | 64KB | | 64KB | | 64KB |  |
+|  +------+ +------+ +------+ +------+   +------+ +------+ +------+ +------+  |
+|                         ^                           ^                     |
+|                         | Channel                   | Channel             |
+|                         v                           v                     |
+|  +------+ +------+ +------+ +------+   +------+ +------+ +------+ +------+  |
+|  |SRAM_8| |SRAM_9| |SRAM10| |SRAM11|   |SRAM12| |SRAM13| |SRAM14| |SRAM15|  |
+|  | 64KB | | 64KB | | 64KB | | 64KB |   | 64KB | | 64KB | | 64KB | | 64KB |  |
+|  +------+ +------+ +------+ +------+   +------+ +------+ +------+ +------+  |
+|                                                                   |
+|                    +------------------+                           |
+|                    | Memory Controller|                           |
+|                    |   (Std Cells)    |                           |
+|                    +------------------+                           |
++------------------------------------------------------------------+</div>
+
+    <h4>Placement Script</h4>
+    <pre># Define macro dimensions
+set sram_width 80
+set sram_height 120
+set channel_width 30
+set halo 5
+
+# Calculate positions for 4x4 array with channels
+proc place_sram_array {} {
+    set x_start 50
+    set y_start 400
+    set idx 0
+    
+    for {set row 0} {$row < 2} {incr row} {
+        for {set col 0} {$col < 8} {incr col} {
+            set x [expr $x_start + $col * (80 + 10)]
+            set y [expr $y_start + $row * (120 + 30)]
+            
+            # Alternate orientation for abutment
+            if {[expr $row % 2] == 0} {
+                set orient "R0"
+            } else {
+                set orient "MX"
+            }
+            
+            placeInstance u_mem/sram_$idx $x $y $orient
+            incr idx
+        }
+    }
+}
+
+# Execute placement
+place_sram_array
+
+# Create channels for routing
+createRouteBlk -box {50 520 750 550} -layer {M1 M2 M3}
+createPlaceBlockage -box {50 520 750 550} -type soft
+
+# Verify macro placement
+checkPlace</pre>
+
+    <h4>Channel Planning Best Practices</h4>
+    <div class="tip-box">
+        <h4>💡 Channel Width Estimation</h4>
+        <ul>
+            <li><strong>Rule of thumb:</strong> Channel width = (Number of signals × Pitch × 2) + Buffer space</li>
+            <li>For 64-bit data bus: ~30µm channel minimum</li>
+            <li>Add extra width for power straps crossing channels</li>
+            <li>Consider signal integrity - avoid long parallel runs</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <!-- Project 3: Standard Cell Placement -->
+    <div class="project-card" id="std-cell">
+        <h3>3. Standard Cell Placement Optimization</h3>
+        <p><strong>Key Learning:</strong> Placement density, timing-driven placement, congestion mitigation</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>Placement Optimization Flow</h4>
+    <div class="diagram">Initial Placement
+       ↓
+Timing Analysis (WNS, TNS)
+       ↓
+Congestion Analysis (Hotspots)
+       ↓
+Optimization Iterations
+   ├── Cell spreading
+   ├── Timing-driven refinement
+   └── Congestion-driven adjustment
+       ↓
+Final Legalization
+       ↓
+Placement Signoff</div>
+
+    <h4>Placement Optimization TCL</h4>
+    <pre># Set placement mode for timing optimization
+setPlaceMode -timingDriven true
+setPlaceMode -congEffort high
+setPlaceMode -dptFlow true
+
+# Initial placement
+place_opt_design -out_dir ./placement_reports
+
+# Analyze placement quality
+report_placement_density > reports/density.rpt
+report_congestion -hotspot > reports/congestion.rpt
+
+# Check timing after placement
+timeDesign -preCTS -outDir reports/timing_prects
+
+# Identify critical paths
+report_timing -max_paths 20 -nworst 5 > reports/critical_paths.rpt
+
+# Optimize placement for timing
+setOptMode -fixFanoutLoad true
+setOptMode -addInstancePrefix PLACED_
+optDesign -preCTS -drv
+
+# Reduce congestion in hotspots
+setPlaceMode -place_global_cong_effort high
+refinePlace -preserveRouting true
+
+# Cell density analysis
+proc analyze_density {region} {
+    set area [dbGet top.fPlan.coreBox_area]
+    set std_area [dbGet [dbGet top.insts.cell.isSequential 0 -p].area -sum]
+    set utilization [expr $std_area / $area * 100]
+    puts "Core utilization: $utilization%"
+}
+
+# Check for placement DRCs
+checkPlace -report reports/placement_check.rpt</pre>
+
+    <h4>Congestion Mitigation Techniques</h4>
+    <table>
+        <tr>
+            <th>Technique</th>
+            <th>When to Use</th>
+            <th>Command/Setting</th>
+        </tr>
+        <tr>
+            <td>Cell Padding</td>
+            <td>High-fanout cells</td>
+            <td><code>specifyCellPad</code></td>
+        </tr>
+        <tr>
+            <td>Partial Blockage</td>
+            <td>Congestion hotspots</td>
+            <td><code>createDensityArea</code></td>
+        </tr>
+        <tr>
+            <td>Soft Guide</td>
+            <td>Logic grouping</td>
+            <td><code>createInstGroup</code></td>
+        </tr>
+        <tr>
+            <td>Keepout Regions</td>
+            <td>Critical paths</td>
+            <td><code>createRouteBlk</code></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- Project 4: Aspect Ratio -->
+    <div class="project-card" id="aspect-ratio">
+        <h3>4. Aspect Ratio Optimization for SoC Block</h3>
+        <p><strong>Key Learning:</strong> Die size estimation, utilization trade-offs, floorplan iteration</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>Aspect Ratio Trade-offs</h4>
+    <table>
+        <tr>
+            <th>Aspect Ratio</th>
+            <th>Pros</th>
+            <th>Cons</th>
+            <th>Best For</th>
+        </tr>
+        <tr>
+            <td>1:1 (Square)</td>
+            <td>Balanced wire length</td>
+            <td>May not fit I/O requirements</td>
+            <td>General purpose</td>
+        </tr>
+        <tr>
+            <td>2:1 (Wide)</td>
+            <td>More horizontal I/O</td>
+            <td>Longer vertical paths</td>
+            <td>Bus-heavy designs</td>
+        </tr>
+        <tr>
+            <td>1:2 (Tall)</td>
+            <td>More vertical I/O</td>
+            <td>Longer horizontal paths</td>
+            <td>Memory stacking</td>
+        </tr>
+    </table>
+
+    <h4>Aspect Ratio Exploration Script</h4>
+    <pre># Function to explore different aspect ratios
+proc explore_aspect_ratios {target_area utilization} {
+    set results {}
+    
+    foreach ar {0.5 0.75 1.0 1.25 1.5 2.0} {
+        # Calculate dimensions
+        set core_area [expr $target_area / $utilization]
+        set width [expr sqrt($core_area * $ar)]
+        set height [expr $core_area / $width]
+        
+        puts "Aspect Ratio: $ar"
+        puts "  Width: [format %.2f $width] um"
+        puts "  Height: [format %.2f $height] um"
+        
+        # Create floorplan
+        floorPlan -site core -r $ar $utilization 20 20 20 20
+        
+        # Run quick placement
+        place_design -effort low
+        
+        # Estimate wire length
+        set wl [dbGet top.nets.wires.length -sum]
+        puts "  Estimated WL: [format %.0f $wl] um"
+        
+        # Check congestion
+        set cong [estimateCongestion -short]
+        puts "  Congestion: $cong"
+        
+        lappend results [list $ar $width $height $wl $cong]
+    }
+    
+    return $results
+}
+
+# Run exploration for 2mm² target area at 70% utilization
+set area_um2 2000000
+explore_aspect_ratios $area_um2 0.7</pre>
+
+    <h4>Die Size Estimation Formula</h4>
+    <div class="tip-box">
+        <h4>📐 Die Area Calculation</h4>
+        <pre>
+Core Area = (Std Cell Area + Macro Area) / Target Utilization
+
+Die Area = Core Area + (2 × IO Ring Width × √Core Area) + Corners
+
+Example:
+  Std Cell Area: 0.8 mm²
+  Macro Area: 0.5 mm²
+  Utilization: 70%
+  IO Ring: 100 µm
+  
+  Core Area = (0.8 + 0.5) / 0.7 = 1.86 mm²
+  Core Side = √1.86 = 1.36 mm
+  Die Side = 1.36 + 0.2 = 1.56 mm
+  Die Area = 2.43 mm²</pre>
+    </div>
+
+    <hr>
+
+    <!-- Project 5: Pin Placement -->
+    <div class="project-card" id="pin-placement">
+        <h3>5. Pin Placement Optimization for Timing Critical Module</h3>
+        <p><strong>Key Learning:</strong> I/O assignment, feedthrough planning, timing-aware pin placement</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>Pin Placement Strategy</h4>
+    <div class="diagram">                    TOP (Address Bus)
+              +--------------------------+
+              | A[31:0]                   |
+              |                          |
+    LEFT      |                          |      RIGHT
+    (Control) |      Core Logic          |      (Data Bus)
+    CLK  ---->|                          |----> D_OUT[63:0]
+    RST  ---->|                          |
+    EN   ---->|                          |<---- D_IN[63:0]
+              |                          |
+              |                          |
+              +--------------------------+
+                    BOTTOM (Power/Test)</div>
+
+    <h4>Pin Assignment TCL Script</h4>
+    <pre># Define pin layers
+setPinAssignMode -pinEditInBatch true
+
+# Clock and reset - dedicated locations for short paths
+editPin -pinWidth 0.2 -pinDepth 1 -fixedPin 1 \
+    -unit MICRON -spreadDirection clockwise \
+    -side Left -layer M4 -spreadType center \
+    -spacing 2 -pin {clk rst_n}
+
+# Control signals - left side
+editPin -pinWidth 0.14 -pinDepth 0.5 \
+    -unit MICRON -spreadDirection clockwise \
+    -side Left -layer M4 -spreadType start \
+    -offsetStart 100 -spacing 1 \
+    -pin {en rd_en wr_en mode[*]}
+
+# Address bus - top side
+editPin -pinWidth 0.14 -pinDepth 0.5 \
+    -unit MICRON -spreadDirection clockwise \
+    -side Top -layer M5 -spreadType center \
+    -spacing 0.5 -pin {addr[*]}
+
+# Data input - right side bottom half
+editPin -pinWidth 0.14 -pinDepth 0.5 \
+    -unit MICRON -spreadDirection counterclockwise \
+    -side Right -layer M4 -spreadType start \
+    -offsetStart 50 -spacing 0.5 \
+    -pin {data_in[*]}
+
+# Data output - right side top half
+editPin -pinWidth 0.14 -pinDepth 0.5 \
+    -unit MICRON -spreadDirection clockwise \
+    -side Right -layer M4 -spreadType start \
+    -offsetStart 300 -spacing 0.5 \
+    -pin {data_out[*]}
+
+# Power and ground pins
+editPin -pinWidth 2 -pinDepth 2 \
+    -side Bottom -layer M5 -spreadType center \
+    -spacing 50 -pin {VDD VSS}
+
+# Verify pin placement
+verifyPinAssignment
+
+# Generate pin report
+reportPin > reports/pin_assignment.rpt</pre>
+
+    <h4>Timing-Aware Pin Placement Guidelines</h4>
+    <div class="tip-box">
+        <h4>⏱️ Pin Placement for Timing</h4>
+        <ul>
+            <li><strong>Clock pins:</strong> Place near clock tree root, short path to flip-flops</li>
+            <li><strong>Critical I/O:</strong> Place near associated logic to minimize wire delay</li>
+            <li><strong>Bus signals:</strong> Group together to reduce skew</li>
+            <li><strong>Feedthroughs:</strong> Align input/output pins for pass-through signals</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="interview-box">
+        <h3>Floorplanning Interview Questions</h3>
+        <ol>
+            <li><strong>How do you decide macro placement?</strong> - Based on dataflow, pin locations, and timing criticality</li>
+            <li><strong>What is channel estimation?</strong> - Calculating routing space needed between macros based on signal count and pitch</li>
+            <li><strong>How do you handle high utilization?</strong> - Reduce target utilization, split design, optimize logic</li>
+            <li><strong>What causes placement congestion?</strong> - High-fanout nets, dense logic, inadequate channels</li>
+            <li><strong>How to optimize aspect ratio?</strong> - Consider I/O requirements, wire length, and macro shapes</li>
+        </ol>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Continue your Physical Design journey with the complete blog series:</p>
+    <ul>
+        <li><strong>Routing & Signal Integrity</strong> - Global/detailed routing, crosstalk fixing</li>
+        <li><strong>Clock & Timing</strong> - CTS, timing closure, ECO fixes</li>
+        <li><strong>Power-Aware PD</strong> - Power grid, IR drop, multi-voltage</li>
+        <li><strong>STA & Verification</strong> - SDC, DRC/LVS debugging</li>
+        <li><strong>End-to-End Flow</strong> - Complete RTL to GDSII project (Coming Soon)</li>
+    </ul>
+
+    <div class="blog-nav">
+        <span></span>
+        <a href="routing.html">Next: Routing & Signal Integrity →</a>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#PhysicalDesign</span>
+        <span class="tag">#Floorplanning</span>
+        <span class="tag">#Placement</span>
+        <span class="tag">#VLSI</span>
+        <span class="tag">#ASIC</span>
+        <span class="tag">#Innovus</span>
+        <span class="tag">#ICC2</span>
+    </div>
+
+</div>
+
+<footer>
+    <p>Physical Design examples are for educational purposes. Verify with your foundry PDK.</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://vlsi-blog-counter-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const counterRef = ref(database, 'pd01Views');
+
+    runTransaction(counterRef, (currentValue) => {
+        if (currentValue === null) return 1000;
+        return currentValue + 1;
+    }).then((result) => {
+        document.getElementById('visit-count').textContent = result.snapshot.val();
+    }).catch((error) => {
+        document.getElementById('visit-count').textContent = '1000+';
+    });
+</script>
+
+</body>
+</html>

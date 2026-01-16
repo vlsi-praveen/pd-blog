@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power-Aware Physical Design Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .nav-bar {
+            background: #0f3460;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9em;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .nav-bar a.active {
+            font-weight: bold;
+            border-bottom: 2px solid #64B5F6;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0a2540 0%, #0f3460 50%, #1a5f8a 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .header-banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .header-banner .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .header-banner .meta {
+            margin-top: 20px;
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        .view-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0a2540;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .view-counter span {
+            font-weight: bold;
+            color: #64B5F6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0a2540;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0f3460;
+        }
+        h3 {
+            color: #0f3460;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+        }
+        h4 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0f3460;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .toc {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .toc ol {
+            margin-left: 25px;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #0f3460;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .project-card {
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            border-left: 4px solid #0f3460;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .project-card h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .interview-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .interview-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tip-box h4 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .tags {
+            margin-top: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #0f3460;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85em;
+        }
+        .diagram {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        .blog-nav {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .blog-nav a {
+            color: #0f3460;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .blog-nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">01: Floorplan</a>
+    <a href="routing.html">02: Routing</a>
+    <a href="clock-timing.html">03: Clock & Timing</a>
+    <a href="power.html" class="active">04: Power</a>
+    <a href="sta-verification.html">05: STA & DRC/LVS</a>
+    <a href="e2e.html">06: End-to-End</a>
+</div>
+
+<div class="header-banner">
+    <h1>Power-Aware Physical Design</h1>
+    <p class="subtitle">Master Power Grid Design, IR Drop & Multi-Voltage Domains</p>
+    <p class="meta"><strong>Praveen Kumar Vagala</strong> | 24 min read</p>
+</div>
+
+<div class="view-counter">
+    Views: <span id="visit-count">1000</span>
+</div>
+
+<div class="container">
+
+    <h2>Introduction</h2>
+    <p>
+        Power management is critical in modern SoC designs. From power grid design to IR drop analysis and multi-voltage domain implementation, this blog covers 5 essential power-aware physical design projects that every PD engineer must master.
+    </p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#power-grid">Power Grid Design and Analysis</a></li>
+            <li><a href="#clock-gating">Clock Gating Impact Analysis in PD</a></li>
+            <li><a href="#multi-voltage">Multi-Voltage Domain Physical Design</a></li>
+            <li><a href="#ir-drop">IR Drop Analysis & Fixing</a></li>
+            <li><a href="#ppa">Power-Performance-Area (PPA) Optimization</a></li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- Project 1: Power Grid -->
+    <div class="project-card" id="power-grid">
+        <h3>1. Power Grid Design and Analysis</h3>
+        <p><strong>Key Learning:</strong> Power rings, stripes, rails, via stacks</p>
+        <p><strong>Tools:</strong> Innovus / ICC2 / RedHawk</p>
+    </div>
+
+    <h4>Power Grid Topology</h4>
+    <div class="diagram">Top View of Power Grid:
+┌─────────────────────────────────────────────────────────┐
+│ VDD ═══════════════════════════════════════════════════│
+│ ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║ │  ← M6 Stripes
+│ ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║ │
+│ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═│  ← M5 Stripes
+│ ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║ │
+│ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═│
+│ ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║   ║ │
+│ VSS ═══════════════════════════════════════════════════│
+└─────────────────────────────────────────────────────────┘
+
+Cross-Section View:
+         M6 (VDD)     M6 (VSS)
+           ║           ║
+    Via5 ──╬───────────╬── Via5
+           ║           ║
+         M5 (VDD)     M5 (VSS)
+           ║           ║
+    Via4 ──╬───────────╬── Via4
+           ║           ║
+         M4           M4
+           ↓           ↓
+      Standard Cell Rails (M1)</div>
+
+    <h4>Power Grid Creation Script</h4>
+    <pre># Create power rings around core
+addRing -nets {VDD VSS} \
+    -type core_rings \
+    -layer {top M6 bottom M6 left M5 right M5} \
+    -width {top 2.0 bottom 2.0 left 2.0 right 2.0} \
+    -spacing {top 0.5 bottom 0.5 left 0.5 right 0.5} \
+    -offset {top 2.0 bottom 2.0 left 2.0 right 2.0}
+
+# Create vertical stripes (M6)
+addStripe -nets {VDD VSS} \
+    -layer M6 \
+    -direction vertical \
+    -width 1.0 \
+    -spacing 0.5 \
+    -set_to_set_distance 20 \
+    -start_from left \
+    -start_offset 10
+
+# Create horizontal stripes (M5)
+addStripe -nets {VDD VSS} \
+    -layer M5 \
+    -direction horizontal \
+    -width 0.8 \
+    -spacing 0.4 \
+    -set_to_set_distance 25 \
+    -start_from bottom \
+    -start_offset 10
+
+# Add via stacks at intersections
+sroute -connect {padPin blockPin corePin} \
+    -layerChangeRange {M1 M6} \
+    -blockPinTarget nearestTarget \
+    -padPinPortConnect allPort \
+    -nets {VDD VSS}
+
+# Create standard cell follow pins (M1 rails)
+addStripe -nets {VDD VSS} \
+    -layer M1 \
+    -direction horizontal \
+    -width 0.1 \
+    -followPins 1</pre>
+
+    <h4>Power Grid Quality Metrics</h4>
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Typical Target</th>
+            <th>Impact</th>
+        </tr>
+        <tr>
+            <td>Stripe Width</td>
+            <td>0.5-2.0 µm</td>
+            <td>Current capacity</td>
+        </tr>
+        <tr>
+            <td>Stripe Pitch</td>
+            <td>20-50 µm</td>
+            <td>IR drop uniformity</td>
+        </tr>
+        <tr>
+            <td>Via Density</td>
+            <td>Max allowed</td>
+            <td>Vertical resistance</td>
+        </tr>
+        <tr>
+            <td>Ring Width</td>
+            <td>2-5 µm</td>
+            <td>Pad connectivity</td>
+        </tr>
+        <tr>
+            <td>Mesh Layers</td>
+            <td>M4-M6</td>
+            <td>Routing blockage</td>
+        </tr>
+    </table>
+
+    <h4>Power Grid Analysis</h4>
+    <pre># Analyze power grid resistance
+analyzeFloorplan -powerGrid
+reportPowerGrid > reports/power_grid.rpt
+
+# Check via coverage
+proc check_via_coverage {} {
+    set vias [dbGet top.insts.cell.pgPins.name VDD -p2]
+    set total_area [dbGet top.fplan.area]
+    set via_count [llength $vias]
+    
+    puts "Via count: $via_count"
+    puts "Via density: [expr $via_count / $total_area] per µm²"
+}
+
+# Verify power connections
+verifyConnectivity -type special -nets {VDD VSS}
+
+# Report effective resistance
+reportResistance -net VDD > reports/vdd_resistance.rpt</pre>
+
+    <hr>
+
+    <!-- Project 2: Clock Gating -->
+    <div class="project-card" id="clock-gating">
+        <h3>2. Clock Gating Impact Analysis in PD</h3>
+        <p><strong>Key Learning:</strong> ICG placement, clock gating efficiency, power savings</p>
+        <p><strong>Tools:</strong> Innovus / Power Artist</p>
+    </div>
+
+    <h4>Clock Gating Architecture</h4>
+    <div class="diagram">Before Clock Gating:
+                   CLK
+                    │
+    ┌───────────────┼───────────────┐
+    ↓               ↓               ↓
+  ┌───┐          ┌───┐          ┌───┐
+  │FF1│          │FF2│          │FF3│   All FFs toggle every cycle
+  └───┘          └───┘          └───┘   Power ∝ N × Cload × f × V²
+
+After Clock Gating:
+                   CLK ─────┬─────────────────────┐
+                            │                     │
+                    EN ─────┤                     │
+                            │                     │
+                      ┌─────┴─────┐               │
+                      │    ICG    │               │
+                      │ (Latch +  │               │
+                      │   AND)    │               │
+                      └─────┬─────┘               │
+                     gated_clk                    │
+    ┌───────────────┬───────┴───────┐             │
+    ↓               ↓               ↓             │
+  ┌───┐          ┌───┐          ┌───┐          ┌───┐
+  │FF1│          │FF2│          │FF3│          │FF4│  Ungated
+  └───┘          └───┘          └───┘          └───┘</div>
+
+    <h4>ICG Placement Strategy</h4>
+    <pre># Identify clock gating cells
+set icg_cells [get_cells -hierarchical -filter "ref_name=~*ICG*"]
+puts "Found [sizeof_collection $icg_cells] ICG cells"
+
+# Place ICGs near their fanout center of mass
+proc place_icg_optimal {} {
+    set icgs [get_cells -hierarchical -filter "is_clock_gating_cell==true"]
+    
+    foreach icg $icgs {
+        # Get all sinks (flops driven by this ICG)
+        set sinks [get_fanout -from [get_pins $icg/Q] -flat -endpoints_only]
+        
+        # Calculate center of mass
+        set x_sum 0
+        set y_sum 0
+        set count 0
+        
+        foreach sink $sinks {
+            set loc [get_attribute [get_cells -of $sink] origin]
+            set x_sum [expr $x_sum + [lindex $loc 0]]
+            set y_sum [expr $y_sum + [lindex $loc 1]]
+            incr count
+        }
+        
+        if {$count > 0} {
+            set new_x [expr $x_sum / $count]
+            set new_y [expr $y_sum / $count]
+            
+            # Move ICG to optimal location
+            placeInstance $icg $new_x $new_y -fixed
+            puts "Placed $icg at ($new_x, $new_y)"
+        }
+    }
+}
+
+# Legalize after ICG placement
+refinePlace
+
+# Report ICG distribution
+proc report_icg_efficiency {} {
+    set icgs [get_cells -hierarchical -filter "is_clock_gating_cell==true"]
+    
+    foreach icg $icgs {
+        set fanout [sizeof_collection [get_fanout -from [get_pins $icg/Q] -flat]]
+        set en_name [get_pins $icg/EN]
+        
+        puts "ICG: $icg"
+        puts "  Fanout: $fanout FFs"
+        puts "  Enable: $en_name"
+    }
+}</pre>
+
+    <h4>Power Savings Analysis</h4>
+    <pre># Estimate clock gating savings
+proc estimate_cg_savings {} {
+    set total_ffs [sizeof_collection [all_registers]]
+    set gated_ffs 0
+    
+    set icgs [get_cells -hierarchical -filter "is_clock_gating_cell==true"]
+    
+    foreach icg $icgs {
+        set fanout [sizeof_collection [get_fanout -from [get_pins $icg/Q] -flat]]
+        set gated_ffs [expr $gated_ffs + $fanout]
+    }
+    
+    set gating_ratio [expr double($gated_ffs) / $total_ffs * 100]
+    puts "Total FFs: $total_ffs"
+    puts "Gated FFs: $gated_ffs"
+    puts "Gating Ratio: [format %.1f $gating_ratio]%"
+    
+    # Estimate power savings (assuming 30% activity reduction)
+    set activity_factor 0.3
+    set savings [expr $gating_ratio * $activity_factor]
+    puts "Estimated Clock Power Reduction: [format %.1f $savings]%"
+}
+
+# Report clock power breakdown
+report_power -clock_network > reports/clock_power.rpt</pre>
+
+    <hr>
+
+    <!-- Project 3: Multi-Voltage -->
+    <div class="project-card" id="multi-voltage">
+        <h3>3. Multi-Voltage Domain Physical Design</h3>
+        <p><strong>Key Learning:</strong> Level shifters, isolation cells, power switches</p>
+        <p><strong>Tools:</strong> Innovus CPF/UPF / ICC2 UPF</p>
+    </div>
+
+    <h4>Multi-Voltage Architecture</h4>
+    <div class="diagram">┌────────────────────────────────────────────────────────┐
+│                        SoC                              │
+│  ┌─────────────────┐      ┌─────────────────────────┐  │
+│  │  Always-On      │      │   Switchable Domain     │  │
+│  │  Domain (1.0V)  │      │   (0.9V/OFF)            │  │
+│  │                 │      │                         │  │
+│  │  ┌───────────┐  │LS    │  ┌───────────────────┐  │  │
+│  │  │ Control   │──┼──────┼──│ Data Processing   │  │  │
+│  │  │ Logic     │  │      │  │ Engine            │  │  │
+│  │  └───────────┘  │      │  └───────────────────┘  │  │
+│  │                 │      │                         │  │
+│  │  ┌───────────┐  │LS    │  ┌───────────────────┐  │  │
+│  │  │ Retention │◄─┼──────┼──│ State Registers   │  │  │
+│  │  │ Logic     │  │      │  │ (with retention)  │  │  │
+│  │  └───────────┘  │      │  └───────────────────┘  │  │
+│  │                 │      │          ║              │  │
+│  └─────────────────┘      │   PSW ═══╬══════════   │  │
+│         ║                 │          ║ VDD_SW      │  │
+│         ║                 └──────────╬─────────────┘  │
+│         ║                            ║                │
+│  VDD ═══╬════════════════════════════╬════════════   │
+│         ║                            ║                │
+└─────────╬────────────────────────────╬────────────────┘
+
+LS = Level Shifter
+PSW = Power Switch</div>
+
+    <h4>UPF Definition</h4>
+    <pre># Create power domains
+create_power_domain PD_TOP -include_scope
+create_power_domain PD_SWITCH -elements {u_data_engine}
+
+# Define supply nets
+create_supply_net VDD
+create_supply_net VSS
+create_supply_net VDD_SW
+
+# Define supply sets
+create_supply_set SS_TOP -function {power VDD} -function {ground VSS}
+create_supply_set SS_SWITCH -function {power VDD_SW} -function {ground VSS}
+
+# Associate supply sets with domains
+associate_supply_set SS_TOP -handle PD_TOP.primary
+associate_supply_set SS_SWITCH -handle PD_SWITCH.primary
+
+# Create power switch
+create_power_switch PSW1 \
+    -domain PD_SWITCH \
+    -input_supply_port {VDD_IN VDD} \
+    -output_supply_port {VDD_OUT VDD_SW} \
+    -control_port {SLEEP sleep_signal} \
+    -on_state {ON VDD_IN {!SLEEP}}
+
+# Define isolation strategy
+set_isolation ISO_SWITCH \
+    -domain PD_SWITCH \
+    -isolation_power_net VDD \
+    -isolation_ground_net VSS \
+    -clamp_value 0 \
+    -applies_to outputs
+
+# Set isolation control
+set_isolation_control ISO_SWITCH \
+    -domain PD_SWITCH \
+    -isolation_signal iso_en \
+    -isolation_sense high \
+    -location parent
+
+# Define level shifters
+set_level_shifter LS_TO_SWITCH \
+    -domain PD_TOP \
+    -applies_to outputs \
+    -rule both \
+    -location parent
+
+# Define retention strategy
+set_retention RET_SWITCH \
+    -domain PD_SWITCH \
+    -retention_power_net VDD \
+    -retention_ground_net VSS
+
+set_retention_control RET_SWITCH \
+    -domain PD_SWITCH \
+    -save_signal {save_sig high} \
+    -restore_signal {restore_sig high}</pre>
+
+    <h4>Physical Implementation</h4>
+    <pre># Read UPF
+read_power_intent -1801 design.upf
+
+# Create voltage areas
+create_voltage_area -name VA_SWITCH \
+    -power_domain PD_SWITCH \
+    -coordinate {100 100 500 400}
+
+# Place power switches around domain
+addPowerSwitch \
+    -column \
+    -powerDomain PD_SWITCH \
+    -leftOffset 10 \
+    -horizontalPitch 50 \
+    -prefix PSW
+
+# Connect power switch chain
+connectPowerSwitch \
+    -powerDomain PD_SWITCH \
+    -globalSwitchCellName HEADER_X1
+
+# Insert level shifters
+addLevelShifter -domain PD_SWITCH
+
+# Insert isolation cells  
+addIsolation -domain PD_SWITCH
+
+# Verify power structure
+verifyPowerDomain -verbose > reports/pd_verify.rpt
+
+# Check level shifter placement
+checkLevelShifterPlacement > reports/ls_check.rpt</pre>
+
+    <hr>
+
+    <!-- Project 4: IR Drop -->
+    <div class="project-card" id="ir-drop">
+        <h3>4. IR Drop Analysis & Fixing</h3>
+        <p><strong>Key Learning:</strong> Static/dynamic IR, EM analysis, hotspot fixing</p>
+        <p><strong>Tools:</strong> RedHawk / Voltus / PTPX</p>
+    </div>
+
+    <h4>IR Drop Concepts</h4>
+    <div class="diagram">IR Drop = I × R (Ohm's Law)
+
+Static IR Drop:
+┌─────────────────────────────────────────────────────┐
+│  VDD Pad ═══════════════════════════════════════   │
+│      │                                              │
+│      R1 (wire resistance)                           │
+│      │                                              │
+│      ├─────────────────────────────────────────     │
+│      │              │              │                │
+│      R2             R2             R2               │
+│      │              │              │                │
+│    Cell1          Cell2          Cell3              │
+│   (I_avg)        (I_avg)        (I_avg)             │
+│                                                     │
+│  V_cell = VDD - I_total × R_path                   │
+└─────────────────────────────────────────────────────┘
+
+Dynamic IR Drop:
+┌─────────────────────────────────────────────────────┐
+│  Caused by simultaneous switching                   │
+│                                                     │
+│  CLK ──────┬───────┬───────┬───────                 │
+│            ↓       ↓       ↓                        │
+│          [FF1]   [FF2]   [FF3]   ← All switch!     │
+│            │       │       │                        │
+│            └───────┴───────┘                        │
+│                    │                                │
+│              I_peak (very high)                     │
+│                    │                                │
+│              L × di/dt (inductance)                 │
+│                    │                                │
+│              Voltage Droop!                         │
+└─────────────────────────────────────────────────────┘</div>
+
+    <h4>Static IR Analysis</h4>
+    <pre># Set power analysis mode
+setAnalysisMode -powerAnalysis true
+
+# Specify switching activity
+read_activity_file -format VCD -scope tb_top/dut activity.vcd
+# Or use statistical estimation
+set_switching_activity -static_probability 0.5 -toggle_rate 0.1
+
+# Run static IR analysis
+analyze_power_grid -type static \
+    -net VDD \
+    -output_directory reports/ir_static
+
+# Report IR drop map
+report_ir_drop -net VDD -max_ir_drop 50 > reports/ir_drop.rpt
+
+# Find hotspots
+proc find_ir_hotspots {threshold} {
+    set violations [get_ir_drop_violations -above $threshold]
+    
+    puts "IR Drop Hotspots (> ${threshold}mV):"
+    foreach viol $violations {
+        set inst [lindex $viol 0]
+        set ir [lindex $viol 1]
+        puts "  Instance: $inst, IR Drop: ${ir}mV"
+    }
+}
+
+find_ir_hotspots 50</pre>
+
+    <h4>Dynamic IR Analysis</h4>
+    <pre># Dynamic analysis requires timing windows
+set_power_analysis_mode -method averaged_cycle
+
+# Define clock period
+set_dynamic_analysis_options -cycle_accurate true
+
+# Run dynamic IR analysis
+analyze_power_grid -type dynamic \
+    -net VDD \
+    -scenarios {func_ss test_ff} \
+    -output_directory reports/ir_dynamic
+
+# Report worst-case dynamic drop
+report_dynamic_ir_drop -worst_case > reports/dynamic_ir.rpt
+
+# Analyze Ldi/dt noise
+analyze_ldi_dt_noise -net VDD > reports/ldi_dt.rpt</pre>
+
+    <h4>IR Drop Fixing Techniques</h4>
+    <table>
+        <tr>
+            <th>Problem</th>
+            <th>Solution</th>
+            <th>Command/Action</th>
+        </tr>
+        <tr>
+            <td>Local hotspot</td>
+            <td>Add via stacks</td>
+            <td><code>addVia</code></td>
+        </tr>
+        <tr>
+            <td>Sparse grid</td>
+            <td>Add stripes</td>
+            <td><code>addStripe</code></td>
+        </tr>
+        <tr>
+            <td>High current</td>
+            <td>Widen stripes</td>
+            <td>Increase width</td>
+        </tr>
+        <tr>
+            <td>Long path</td>
+            <td>Add power pads</td>
+            <td>Floorplan change</td>
+        </tr>
+        <tr>
+            <td>Decap shortage</td>
+            <td>Insert decaps</td>
+            <td><code>addDecapCells</code></td>
+        </tr>
+    </table>
+
+    <h4>IR Drop Fix Script</h4>
+    <pre># Add decoupling capacitors in hotspot areas
+proc add_decaps_hotspot {x1 y1 x2 y2} {
+    # Add decap cells in specified region
+    addFiller -cell DCAP_X4 \
+        -area "$x1 $y1 $x2 $y2" \
+        -prefix DCAP
+}
+
+# Add additional stripes in high-IR area
+proc add_stripe_fix {net layer x1 y1 x2 y2} {
+    addStripe -nets $net \
+        -layer $layer \
+        -direction vertical \
+        -width 0.8 \
+        -spacing 0.4 \
+        -set_to_set_distance 15 \
+        -area "$x1 $y1 $x2 $y2"
+}
+
+# Fix specific hotspot
+add_decaps_hotspot 200 300 250 350
+add_stripe_fix VDD M5 200 300 250 350
+
+# Verify fix
+analyze_power_grid -type static -net VDD
+report_ir_drop -net VDD -area "200 300 250 350"</pre>
+
+    <hr>
+
+    <!-- Project 5: PPA Optimization -->
+    <div class="project-card" id="ppa">
+        <h3>5. Power-Performance-Area (PPA) Optimization</h3>
+        <p><strong>Key Learning:</strong> Trade-off analysis, Vt swapping, power optimization</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>PPA Trade-offs</h4>
+    <div class="diagram">PPA Trade-off Triangle:
+                    
+              Performance
+                  ▲
+                 / \
+                /   \
+               /     \
+              /       \
+             /  Design  \
+            /   Space    \
+           /             \
+          ◄───────────────►
+        Power            Area
+
+Common Trade-offs:
+┌──────────────┬─────────────┬─────────────┬────────────┐
+│ Optimization │ Performance │    Power    │    Area    │
+├──────────────┼─────────────┼─────────────┼────────────┤
+│ Upsize cells │     ↑       │      ↑      │     ↑      │
+│ LVT → HVT    │     ↓       │      ↓      │     -      │
+│ Add buffers  │     ↑       │      ↑      │     ↑      │
+│ Increase Vdd │     ↑       │      ↑↑     │     -      │
+│ Lower Vdd    │     ↓       │      ↓↓     │     -      │
+│ Clock gating │     -       │      ↓      │     ↑      │
+└──────────────┴─────────────┴─────────────┴────────────┘</div>
+
+    <h4>Vt Swapping for Power</h4>
+    <pre># Report current Vt distribution
+proc report_vt_distribution {} {
+    set lvt [sizeof_collection [get_cells -filter "lib_cell.threshold_voltage_group==LVT"]]
+    set svt [sizeof_collection [get_cells -filter "lib_cell.threshold_voltage_group==SVT"]]
+    set hvt [sizeof_collection [get_cells -filter "lib_cell.threshold_voltage_group==HVT"]]
+    
+    set total [expr $lvt + $svt + $hvt]
+    
+    puts "Vt Distribution:"
+    puts "  LVT: $lvt ([format %.1f [expr $lvt*100.0/$total]]%)"
+    puts "  SVT: $svt ([format %.1f [expr $svt*100.0/$total]]%)"
+    puts "  HVT: $hvt ([format %.1f [expr $hvt*100.0/$total]]%)"
+}
+
+# Optimize Vt for power
+setOptMode -leakagePowerEffort high
+setOptMode -dynamicPowerEffort high
+
+# Swap cells to HVT where timing permits
+optDesign -postRoute -leakagePower
+
+# Report power after optimization
+report_power -leakage > reports/leakage_after.rpt
+
+# Manual Vt swapping for specific cells
+proc swap_to_hvt {cell} {
+    set ref [get_attribute $cell ref_name]
+    # Replace LVT with HVT variant
+    set hvt_ref [regsub "LVT" $ref "HVT"]
+    
+    if {[sizeof_collection [get_lib_cells $hvt_ref]] > 0} {
+        ecoChangeCell -inst $cell -cell $hvt_ref
+        puts "Swapped $cell to HVT"
+    }
+}</pre>
+
+    <h4>PPA Analysis Script</h4>
+    <pre># Comprehensive PPA report
+proc report_ppa {} {
+    puts "====== PPA Report ======"
+    
+    # Performance
+    set wns [get_attribute [current_design] worst_negative_slack]
+    set tns [get_attribute [current_design] total_negative_slack]
+    puts "\nPerformance:"
+    puts "  WNS: ${wns} ns"
+    puts "  TNS: ${tns} ns"
+    
+    # Power
+    set total_power [get_attribute [current_design] total_power]
+    set leakage [get_attribute [current_design] leakage_power]
+    set dynamic [get_attribute [current_design] dynamic_power]
+    puts "\nPower:"
+    puts "  Total: [format %.3f [expr $total_power*1000]] mW"
+    puts "  Leakage: [format %.3f [expr $leakage*1000]] mW"
+    puts "  Dynamic: [format %.3f [expr $dynamic*1000]] mW"
+    
+    # Area
+    set cell_area [get_attribute [current_design] cell_area]
+    set core_area [get_attribute [current_design] core_area]
+    set utilization [expr $cell_area / $core_area * 100]
+    puts "\nArea:"
+    puts "  Cell Area: [format %.0f $cell_area] µm²"
+    puts "  Core Area: [format %.0f $core_area] µm²"
+    puts "  Utilization: [format %.1f $utilization]%"
+    
+    puts "========================"
+}
+
+# Run PPA analysis
+report_ppa</pre>
+
+    <div class="tip-box">
+        <h4>💡 Power Optimization Best Practices</h4>
+        <ul>
+            <li>Start with HVT, swap to LVT only for timing</li>
+            <li>Use clock gating for idle blocks</li>
+            <li>Implement multi-voltage for different domains</li>
+            <li>Add decaps near high-switching areas</li>
+            <li>Optimize power grid before final signoff</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="interview-box">
+        <h3>Power-Aware PD Interview Questions</h3>
+        <ol>
+            <li><strong>What are the components of a power grid?</strong> - Rings, stripes, rails, via stacks, decaps</li>
+            <li><strong>What is the difference between static and dynamic IR drop?</strong> - Static is average current; dynamic is peak during switching</li>
+            <li><strong>What cells are needed for multi-voltage design?</strong> - Level shifters, isolation cells, power switches, retention cells</li>
+            <li><strong>How does Vt swapping reduce power?</strong> - HVT has lower leakage but slower speed</li>
+            <li><strong>How do you fix IR drop hotspots?</strong> - Add decaps, widen stripes, add via stacks, insert power pads</li>
+        </ol>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Continue your Physical Design journey with the complete blog series:</p>
+    <ul>
+        <li><strong>STA & Verification</strong> - SDC, DRC/LVS debugging</li>
+        <li><strong>End-to-End Flow</strong> - Complete RTL to GDSII project (Coming Soon)</li>
+    </ul>
+
+    <div class="blog-nav">
+        <a href="clock-timing.html">← Previous: Clock & Timing</a>
+        <a href="sta-verification.html">Next: STA & Physical Verification →</a>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#PhysicalDesign</span>
+        <span class="tag">#PowerGrid</span>
+        <span class="tag">#IRDrop</span>
+        <span class="tag">#MultiVoltage</span>
+        <span class="tag">#UPF</span>
+        <span class="tag">#PPA</span>
+        <span class="tag">#VLSI</span>
+    </div>
+
+</div>
+
+<footer>
+    <p>Physical Design examples are for educational purposes. Verify with your foundry PDK.</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://vlsi-blog-counter-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const counterRef = ref(database, 'pd04Views');
+
+    runTransaction(counterRef, (currentValue) => {
+        if (currentValue === null) return 1000;
+        return currentValue + 1;
+    }).then((result) => {
+        document.getElementById('visit-count').textContent = result.snapshot.val();
+    }).catch((error) => {
+        document.getElementById('visit-count').textContent = '1000+';
+    });
+</script>
+
+</body>
+</html>

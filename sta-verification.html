@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STA & Physical Verification Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .nav-bar {
+            background: #0f3460;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9em;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .nav-bar a.active {
+            font-weight: bold;
+            border-bottom: 2px solid #64B5F6;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0a2540 0%, #0f3460 50%, #1a5f8a 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .header-banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .header-banner .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .header-banner .meta {
+            margin-top: 20px;
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        .view-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0a2540;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .view-counter span {
+            font-weight: bold;
+            color: #64B5F6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0a2540;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0f3460;
+        }
+        h3 {
+            color: #0f3460;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+        }
+        h4 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0f3460;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .toc {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .toc ol {
+            margin-left: 25px;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #0f3460;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .project-card {
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            border-left: 4px solid #0f3460;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .project-card h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .interview-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .interview-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tip-box h4 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .tags {
+            margin-top: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #0f3460;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85em;
+        }
+        .diagram {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        .blog-nav {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .blog-nav a {
+            color: #0f3460;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .blog-nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">01: Floorplan</a>
+    <a href="routing.html">02: Routing</a>
+    <a href="clock-timing.html">03: Clock & Timing</a>
+    <a href="power.html">04: Power</a>
+    <a href="sta-verification.html" class="active">05: STA & DRC/LVS</a>
+    <a href="e2e.html">06: End-to-End</a>
+</div>
+
+<div class="header-banner">
+    <h1>STA & Physical Verification</h1>
+    <p class="subtitle">Master SDC Constraints, DRC Debugging & LVS Closure</p>
+    <p class="meta"><strong>Praveen Kumar Vagala</strong> | 26 min read</p>
+</div>
+
+<div class="view-counter">
+    Views: <span id="visit-count">1000</span>
+</div>
+
+<div class="container">
+
+    <h2>Introduction</h2>
+    <p>
+        Static Timing Analysis (STA) and Physical Verification (DRC/LVS) are the final gatekeepers before tapeout. Mastering SDC constraints, understanding timing paths, and debugging DRC/LVS errors are essential skills. This blog covers 5 projects that prepare you for signoff success.
+    </p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#sdc-develop">Constraint Development and Debug (SDC)</a></li>
+            <li><a href="#post-route-sta">Post-Route STA Analysis & Closure</a></li>
+            <li><a href="#drc-debug">DRC Debugging for Routed Design</a></li>
+            <li><a href="#lvs-debug">LVS Debugging for Standard-Cell Design</a></li>
+            <li><a href="#pv-flow">Physical Verification Flow for SoC Block</a></li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- Project 1: SDC Development -->
+    <div class="project-card" id="sdc-develop">
+        <h3>1. Constraint Development and Debug (SDC)</h3>
+        <p><strong>Key Learning:</strong> Clock definitions, I/O constraints, exceptions</p>
+        <p><strong>Tools:</strong> PrimeTime / Tempus</p>
+    </div>
+
+    <h4>SDC Structure Overview</h4>
+    <div class="diagram">SDC File Organization:
+┌─────────────────────────────────────────────────────────┐
+│ 1. Clock Definitions                                    │
+│    - create_clock, create_generated_clock               │
+│    - set_clock_latency, set_clock_uncertainty           │
+├─────────────────────────────────────────────────────────┤
+│ 2. Clock Relationships                                  │
+│    - set_clock_groups                                   │
+│    - set_false_path (async clocks)                      │
+├─────────────────────────────────────────────────────────┤
+│ 3. I/O Constraints                                      │
+│    - set_input_delay, set_output_delay                  │
+│    - set_driving_cell, set_load                         │
+├─────────────────────────────────────────────────────────┤
+│ 4. Timing Exceptions                                    │
+│    - set_false_path, set_multicycle_path                │
+│    - set_max_delay, set_min_delay                       │
+├─────────────────────────────────────────────────────────┤
+│ 5. Design Rules                                         │
+│    - set_max_transition, set_max_capacitance            │
+│    - set_max_fanout                                     │
+└─────────────────────────────────────────────────────────┘</div>
+
+    <h4>Complete SDC Example</h4>
+    <pre># ==============================================
+# 1. CLOCK DEFINITIONS
+# ==============================================
+
+# Primary clock (100 MHz)
+create_clock -name clk_sys -period 10.0 [get_ports clk_sys]
+
+# Generated clock from PLL
+create_generated_clock -name clk_fast \
+    -source [get_ports clk_sys] \
+    -divide_by 1 \
+    -multiply_by 2 \
+    [get_pins u_pll/clk_out]
+
+# Clock for SPI interface (derived)
+create_generated_clock -name spi_clk \
+    -source [get_pins u_pll/clk_out] \
+    -divide_by 4 \
+    [get_pins u_spi/clk_div/Q]
+
+# Clock uncertainty (jitter + skew)
+set_clock_uncertainty -setup 0.2 [all_clocks]
+set_clock_uncertainty -hold 0.1 [all_clocks]
+
+# Clock transition
+set_clock_transition 0.1 [all_clocks]
+
+# ==============================================
+# 2. CLOCK RELATIONSHIPS
+# ==============================================
+
+# Async clock groups
+set_clock_groups -asynchronous \
+    -group [get_clocks clk_sys] \
+    -group [get_clocks {clk_fast spi_clk}]
+
+# ==============================================
+# 3. I/O CONSTRAINTS
+# ==============================================
+
+# Input delays (external device timing)
+set_input_delay -clock clk_sys -max 3.0 [get_ports data_in*]
+set_input_delay -clock clk_sys -min 0.5 [get_ports data_in*]
+
+# Output delays
+set_output_delay -clock clk_sys -max 2.5 [get_ports data_out*]
+set_output_delay -clock clk_sys -min 0.3 [get_ports data_out*]
+
+# Driving cell and load
+set_driving_cell -lib_cell BUFX4 [all_inputs]
+set_load 0.05 [all_outputs]
+
+# ==============================================
+# 4. TIMING EXCEPTIONS
+# ==============================================
+
+# False path for reset synchronizer
+set_false_path -from [get_ports rst_n]
+
+# False path for static configuration
+set_false_path -from [get_cells config_reg*]
+
+# Multicycle path for slow bus
+set_multicycle_path 2 -setup \
+    -from [get_clocks clk_fast] \
+    -to [get_cells slow_bus_reg*]
+set_multicycle_path 1 -hold \
+    -from [get_clocks clk_fast] \
+    -to [get_cells slow_bus_reg*]
+
+# ==============================================
+# 5. DESIGN RULES
+# ==============================================
+
+set_max_transition 0.3 [current_design]
+set_max_capacitance 0.5 [current_design]
+set_max_fanout 20 [current_design]</pre>
+
+    <h4>SDC Debug Techniques</h4>
+    <pre># Check constraint coverage
+report_constraint -all_violators
+check_timing -verbose > reports/check_timing.rpt
+
+# Verify clock definitions
+report_clocks
+report_clock_networks
+
+# Find unconstrained paths
+proc find_unconstrained {} {
+    set unconstrained [get_timing_paths -unconstrained -max_paths 100]
+    
+    if {[sizeof_collection $unconstrained] > 0} {
+        puts "WARNING: [sizeof_collection $unconstrained] unconstrained paths found"
+        foreach_in_collection path $unconstrained {
+            puts "  From: [get_attribute $path startpoint]"
+            puts "  To: [get_attribute $path endpoint]"
+        }
+    } else {
+        puts "All paths are constrained"
+    }
+}
+
+# Debug input/output delays
+report_port -verbose [all_inputs]
+report_port -verbose [all_outputs]
+
+# Check for constraint conflicts
+proc check_constraint_conflicts {} {
+    # Check for paths that are both false_path and multicycle
+    set fps [get_timing_paths -through [all_false_paths]]
+    set mcps [get_timing_paths -through [all_multicycle_paths]]
+    
+    # Find overlapping paths
+    # This is a simplified check
+    puts "False paths: [sizeof_collection $fps]"
+    puts "Multicycle paths: [sizeof_collection $mcps]"
+}</pre>
+
+    <hr>
+
+    <!-- Project 2: Post-Route STA -->
+    <div class="project-card" id="post-route-sta">
+        <h3>2. Post-Route STA Analysis & Closure</h3>
+        <p><strong>Key Learning:</strong> SPEF extraction, path analysis, signoff timing</p>
+        <p><strong>Tools:</strong> PrimeTime / Tempus</p>
+    </div>
+
+    <h4>Post-Route STA Flow</h4>
+    <div class="diagram">Post-Route Timing Signoff Flow:
+                                    
+    Routed Design (DEF)
+           │
+           ▼
+    ┌──────────────────┐
+    │  RC Extraction   │  → SPEF file (parasitics)
+    │  (StarRC/QRC)    │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │  Static Timing   │  → Timing reports
+    │  Analysis (STA)  │
+    └────────┬─────────┘
+             │
+         Violations?
+        ┌────┴────┐
+       Yes       No
+        │         │
+        ▼         ▼
+    ECO Fixes   Signoff
+        │         │
+        └────┬────┘
+             ▼
+       Timing Closure</div>
+
+    <h4>STA Setup Script</h4>
+    <pre># PrimeTime Setup Script
+
+# Read libraries
+set search_path ". ../libs"
+set link_library "* ss_0p9v_125c.db ff_1p1v_m40c.db"
+set target_library "ss_0p9v_125c.db"
+
+# Read design
+read_verilog post_route.v
+current_design top_module
+link
+
+# Read parasitics (SPEF)
+read_parasitics -format spef design.spef
+
+# Read constraints
+read_sdc design.sdc
+
+# Set analysis mode
+set_operating_conditions -analysis_type on_chip_variation
+
+# Enable CPPR
+set timing_remove_clock_reconvergence_pessimism true
+
+# Run timing analysis
+update_timing -full
+
+# Generate comprehensive reports
+report_timing -max_paths 100 -slack_lesser_than 0 \
+    -path_type full_clock_expanded \
+    > reports/setup_violations.rpt
+
+report_timing -delay_type min -max_paths 100 -slack_lesser_than 0 \
+    > reports/hold_violations.rpt
+
+report_constraint -all_violators > reports/all_violations.rpt</pre>
+
+    <h4>Path Analysis Techniques</h4>
+    <pre># Detailed path analysis
+proc analyze_worst_path {} {
+    set path [get_timing_paths -max_paths 1]
+    
+    puts "====== Worst Path Analysis ======"
+    puts "Slack: [get_attribute $path slack]"
+    puts "Startpoint: [get_attribute $path startpoint]"
+    puts "Endpoint: [get_attribute $path endpoint]"
+    puts ""
+    
+    # Breakdown
+    puts "Launch Clock Latency: [get_attribute $path launch_clock_latency]"
+    puts "Capture Clock Latency: [get_attribute $path capture_clock_latency]"
+    puts "Data Path Delay: [get_attribute $path data_path_delay]"
+    puts ""
+    
+    # Path segments
+    puts "Path Segments:"
+    foreach_in_collection point [get_attribute $path points] {
+        set pin [get_attribute $point object]
+        set arrival [get_attribute $point arrival]
+        set incr [get_attribute $point delay_increment]
+        puts "  [get_attribute $pin full_name]: Arrival=$arrival, Incr=$incr"
+    }
+}
+
+# Find worst paths by clock group
+proc report_by_clock_group {} {
+    set clocks [all_clocks]
+    
+    foreach_in_collection clk $clocks {
+        set clk_name [get_attribute $clk name]
+        puts "\n=== Clock: $clk_name ==="
+        
+        set paths [get_timing_paths -from [all_registers -clock $clk] \
+                                     -to [all_registers -clock $clk] \
+                                     -max_paths 5]
+        
+        foreach_in_collection path $paths {
+            puts "Slack: [get_attribute $path slack]"
+        }
+    }
+}
+
+# Report paths with specific characteristics
+report_timing -through [get_nets high_fanout_net] -max_paths 10
+report_timing -to [get_pins critical_reg/D] -path_type full</pre>
+
+    <h4>Common STA Issues</h4>
+    <table>
+        <tr>
+            <th>Issue</th>
+            <th>Symptom</th>
+            <th>Debug Approach</th>
+        </tr>
+        <tr>
+            <td>Missing clock</td>
+            <td>Unconstrained paths</td>
+            <td><code>check_timing</code></td>
+        </tr>
+        <tr>
+            <td>Wrong SPEF</td>
+            <td>Incorrect delays</td>
+            <td>Verify extraction settings</td>
+        </tr>
+        <tr>
+            <td>Missing exception</td>
+            <td>False violations</td>
+            <td><code>report_exceptions</code></td>
+        </tr>
+        <tr>
+            <td>Crosstalk</td>
+            <td>SI-related failures</td>
+            <td>Enable SI analysis</td>
+        </tr>
+        <tr>
+            <td>OCV</td>
+            <td>Pessimistic slack</td>
+            <td>Enable CPPR</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- Project 3: DRC Debugging -->
+    <div class="project-card" id="drc-debug">
+        <h3>3. DRC Debugging for Routed Design</h3>
+        <p><strong>Key Learning:</strong> DRC rules, violation analysis, fixing strategies</p>
+        <p><strong>Tools:</strong> Calibre / ICV / PVS</p>
+    </div>
+
+    <h4>Common DRC Violations</h4>
+    <div class="diagram">DRC Violation Categories:
+┌────────────────────────────────────────────────────────┐
+│ Width Violations                                       │
+│ ┌─────┐                ┌─────────┐                    │
+│ │     │  width < min   │         │  OK               │
+│ └─────┘                └─────────┘                    │
+├────────────────────────────────────────────────────────┤
+│ Spacing Violations                                     │
+│ ┌───┐ ┌───┐           ┌───┐     ┌───┐                 │
+│ │   │ │   │  < min    │   │     │   │  OK            │
+│ └───┘ └───┘           └───┘     └───┘                 │
+├────────────────────────────────────────────────────────┤
+│ Enclosure Violations                                   │
+│ ┌───────────┐         ┌─────────────┐                 │
+│ │   ┌───┐   │ < min   │   ┌───┐     │  OK            │
+│ │   │VIA│   │         │   │VIA│     │                 │
+│ │   └───┘   │         │   └───┘     │                 │
+│ └───────────┘         └─────────────┘                 │
+├────────────────────────────────────────────────────────┤
+│ Density Violations                                     │
+│ ░░░░░░░░░░░          ▓▓▓▓▓▓▓▓▓▓▓                      │
+│ ░░░░░░░░░░░  sparse  ▓▓▓▓▓▓▓▓▓▓▓  dense              │
+│ ░░░░░░░░░░░          ▓▓▓▓▓▓▓▓▓▓▓                      │
+└────────────────────────────────────────────────────────┘</div>
+
+    <h4>DRC Run Script</h4>
+    <pre># Calibre DRC Run Script
+
+# Set paths
+setenv CALIBRE_DRC_RUNSET "./runsets/drc.cal"
+setenv DESIGN_GDS "./gds/design.gds"
+setenv TOP_CELL "top_module"
+
+# Run DRC
+calibre -drc -hier \
+    -turbo \
+    -64 \
+    -hyper \
+    $CALIBRE_DRC_RUNSET
+
+# Alternative: ICV DRC
+icv -drc \
+    -run_dir ./drc_run \
+    -design $DESIGN_GDS \
+    -cell $TOP_CELL \
+    -rule_file drc_rules.rs</pre>
+
+    <h4>DRC Debug Techniques</h4>
+    <pre># Parse DRC results database
+proc parse_drc_results {drc_db} {
+    set violations {}
+    
+    # Read violation categories
+    set fp [open $drc_db r]
+    while {[gets $fp line] >= 0} {
+        if {[regexp {^(\w+)\s+(\d+)} $line match rule count]} {
+            lappend violations [list $rule $count]
+        }
+    }
+    close $fp
+    
+    # Sort by count
+    set sorted [lsort -index 1 -integer -decreasing $violations]
+    
+    puts "DRC Violation Summary:"
+    puts "======================"
+    foreach viol $sorted {
+        puts "[lindex $viol 0]: [lindex $viol 1] violations"
+    }
+}
+
+# Focus on specific violation
+proc debug_violation {rule_name} {
+    # Extract markers for this rule
+    puts "Debugging rule: $rule_name"
+    
+    # In Innovus
+    loadDRC drc_results.db
+    selectMarker -name $rule_name
+    
+    # Zoom to first violation
+    zoomSelected
+}
+
+# Common fixes by category
+proc fix_drc_category {category} {
+    switch $category {
+        "spacing" {
+            puts "Fix: Increase spacing or reroute"
+            # ecoRoute -minSpacing true
+        }
+        "width" {
+            puts "Fix: Widen wire or use different layer"
+            # setNanoRouteMode -routeWithMinWidth true
+        }
+        "enclosure" {
+            puts "Fix: Resize via or add metal extension"
+            # editVia -viaEdit
+        }
+        "density" {
+            puts "Fix: Add/remove metal fill"
+            # addMetalFill / deleteMetalFill
+        }
+    }
+}</pre>
+
+    <h4>DRC Fixing in P&R Tool</h4>
+    <pre># Load DRC results into Innovus
+loadDRC -file drc_results.db
+
+# View violations
+viewDRCViolations
+
+# Automatic DRC fixing
+setNanoRouteMode -drouteFixAntenna true
+setNanoRouteMode -routeWithViaTrimming true
+
+# Route with DRC repair
+detailRoute -fix_drc
+
+# Search and repair
+routeDesign -searchRepair
+
+# Verify after fix
+verify_drc -limit 1000
+
+# For stubborn violations
+proc fix_stubborn_drc {bbox} {
+    # Delete routes in problem area
+    deleteRouteBlk -box $bbox -layer all
+    
+    # Re-route the area
+    detailRoute -select_net_in_box $bbox
+    
+    # Verify
+    verify_drc -box $bbox
+}</pre>
+
+    <hr>
+
+    <!-- Project 4: LVS Debugging -->
+    <div class="project-card" id="lvs-debug">
+        <h3>4. LVS Debugging for Standard-Cell Design</h3>
+        <p><strong>Key Learning:</strong> Netlist comparison, shorts/opens, device mismatches</p>
+        <p><strong>Tools:</strong> Calibre LVS / ICV / PVS</p>
+    </div>
+
+    <h4>LVS Flow Overview</h4>
+    <div class="diagram">LVS Comparison Flow:
+                                    
+    ┌───────────────┐        ┌───────────────┐
+    │  Layout (GDS) │        │ Schematic     │
+    │               │        │ (Verilog/SPICE)│
+    └───────┬───────┘        └───────┬───────┘
+            │                        │
+            ▼                        ▼
+    ┌───────────────┐        ┌───────────────┐
+    │    Layout     │        │   Schematic   │
+    │   Extraction  │        │    Netlist    │
+    └───────┬───────┘        └───────┬───────┘
+            │                        │
+            └──────────┬─────────────┘
+                       │
+                       ▼
+              ┌────────────────┐
+              │   Comparison   │
+              │    Engine      │
+              └────────┬───────┘
+                       │
+            ┌──────────┴──────────┐
+            ▼                     ▼
+      ┌──────────┐          ┌──────────┐
+      │  MATCH   │          │ MISMATCH │
+      │  ✓       │          │ ✗        │
+      └──────────┘          └──────────┘</div>
+
+    <h4>LVS Run Script</h4>
+    <pre># Calibre LVS Script
+
+# Input files
+LAYOUT_GDS = "design.gds"
+SOURCE_NETLIST = "design.v"
+TOP_CELL = "top_module"
+
+# LVS Rules
+INCLUDE "lvs_rules.cal"
+
+# Layout extraction
+LAYOUT PATH LAYOUT_GDS
+LAYOUT PRIMARY TOP_CELL
+
+# Source netlist
+SOURCE PATH SOURCE_NETLIST
+SOURCE PRIMARY TOP_CELL
+SOURCE SYSTEM VERILOG
+
+# Comparison options
+LVS COMPARE CASE OFF
+LVS FILTER UNUSED OPTION R C
+LVS RECOGNIZE GATES ALL
+
+# Output
+LVS REPORT "lvs.rep"
+LVS REPORT OPTION S V
+
+# Run
+LVS BOX</pre>
+
+    <h4>LVS Error Categories</h4>
+    <table>
+        <tr>
+            <th>Error Type</th>
+            <th>Description</th>
+            <th>Common Cause</th>
+        </tr>
+        <tr>
+            <td>OPEN</td>
+            <td>Missing connection</td>
+            <td>Missing via, broken wire</td>
+        </tr>
+        <tr>
+            <td>SHORT</td>
+            <td>Unintended connection</td>
+            <td>Metal overlap, via bridge</td>
+        </tr>
+        <tr>
+            <td>Device Mismatch</td>
+            <td>Different device count</td>
+            <td>Missing cell, wrong LEF</td>
+        </tr>
+        <tr>
+            <td>Net Mismatch</td>
+            <td>Different net names</td>
+            <td>Case sensitivity, hierarchy</td>
+        </tr>
+        <tr>
+            <td>Property Mismatch</td>
+            <td>Different device size</td>
+            <td>Wrong cell variant</td>
+        </tr>
+    </table>
+
+    <h4>LVS Debug Techniques</h4>
+    <pre># Parse LVS report
+proc parse_lvs_report {report_file} {
+    set fp [open $report_file r]
+    set content [read $fp]
+    close $fp
+    
+    # Check for CORRECT status
+    if {[regexp {CORRECT} $content]} {
+        puts "LVS CLEAN!"
+        return 1
+    }
+    
+    # Parse error types
+    set errors {}
+    
+    if {[regexp {SHORTS: (\d+)} $content match count]} {
+        lappend errors "SHORTS: $count"
+    }
+    if {[regexp {OPENS: (\d+)} $content match count]} {
+        lappend errors "OPENS: $count"
+    }
+    if {[regexp {DEVICE.*DIFF.*: (\d+)} $content match count]} {
+        lappend errors "DEVICE DIFF: $count"
+    }
+    
+    puts "LVS ERRORS:"
+    foreach err $errors {
+        puts "  $err"
+    }
+    return 0
+}
+
+# Debug specific short
+proc debug_short {net_name} {
+    # In Calibre RVE or LVRDB
+    puts "Debugging short on net: $net_name"
+    
+    # Steps:
+    # 1. Load LVS database in RVE
+    # 2. Navigate to short
+    # 3. Highlight connected shapes
+    # 4. Find unintended connection
+}
+
+# Debug open circuit
+proc debug_open {net_name} {
+    puts "Debugging open on net: $net_name"
+    
+    # Steps:
+    # 1. Load LVS database
+    # 2. Navigate to open
+    # 3. Check via connections
+    # 4. Verify layer transitions
+}
+
+# Common LVS fixes in P&R
+proc fix_lvs_issue {type location} {
+    switch $type {
+        "open" {
+            # Add missing via or wire
+            editRoute -add_via $location
+        }
+        "short" {
+            # Delete offending metal
+            deleteRouteShape -box $location
+        }
+    }
+}</pre>
+
+    <div class="tip-box">
+        <h4>💡 LVS Debug Tips</h4>
+        <ul>
+            <li>Start with device count - should match exactly</li>
+            <li>Use ERC (Electrical Rule Check) to find floating nets</li>
+            <li>Check text labels match between layout and schematic</li>
+            <li>Verify power/ground connectivity first</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <!-- Project 5: PV Flow -->
+    <div class="project-card" id="pv-flow">
+        <h3>5. Physical Verification Flow for SoC Block</h3>
+        <p><strong>Key Learning:</strong> Complete PV flow, signoff checklist, tapeout prep</p>
+        <p><strong>Tools:</strong> Calibre / ICV / Assura</p>
+    </div>
+
+    <h4>Complete PV Flow</h4>
+    <div class="diagram">Physical Verification Signoff Flow:
+                                    
+    ┌─────────────────────────────────────────────────────┐
+    │                 GDSII Generation                     │
+    └───────────────────────┬─────────────────────────────┘
+                            │
+            ┌───────────────┼───────────────┐
+            ▼               ▼               ▼
+    ┌───────────┐   ┌───────────┐   ┌───────────┐
+    │    DRC    │   │    LVS    │   │    ERC    │
+    │           │   │           │   │           │
+    └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
+          │               │               │
+          ▼               ▼               ▼
+    ┌───────────┐   ┌───────────┐   ┌───────────┐
+    │  Antenna  │   │    XOR    │   │  Density  │
+    │   Check   │   │   Check   │   │   Check   │
+    └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
+          │               │               │
+          └───────────────┼───────────────┘
+                          │
+                          ▼
+              ┌───────────────────┐
+              │   Metal Fill      │
+              │   (Dummy Metal)   │
+              └─────────┬─────────┘
+                        │
+                        ▼
+              ┌───────────────────┐
+              │  Final DRC/LVS    │
+              │   (with fill)     │
+              └─────────┬─────────┘
+                        │
+                        ▼
+              ┌───────────────────┐
+              │     Signoff       │
+              │     GDSII         │
+              └───────────────────┘</div>
+
+    <h4>PV Automation Script</h4>
+    <pre>#!/bin/bash
+# Complete PV Flow Script
+
+DESIGN="top_module"
+GDS="design.gds"
+NETLIST="design.v"
+
+# Step 1: DRC
+echo "Running DRC..."
+calibre -drc -hier drc.cal
+if [ $? -ne 0 ]; then
+    echo "DRC FAILED - Check drc.rep"
+    exit 1
+fi
+
+# Step 2: LVS
+echo "Running LVS..."
+calibre -lvs -hier lvs.cal
+if [ $? -ne 0 ]; then
+    echo "LVS FAILED - Check lvs.rep"
+    exit 1
+fi
+
+# Step 3: Antenna Check
+echo "Running Antenna Check..."
+calibre -drc -hier antenna.cal
+if [ $? -ne 0 ]; then
+    echo "ANTENNA FAILED - Check antenna.rep"
+    exit 1
+fi
+
+# Step 4: Density Check
+echo "Running Density Check..."
+calibre -drc density.cal
+if [ $? -ne 0 ]; then
+    echo "DENSITY FAILED - Need fill"
+fi
+
+# Step 5: Metal Fill
+echo "Running Metal Fill..."
+calibre -batch metal_fill.cal
+
+# Step 6: Final DRC with Fill
+echo "Running Final DRC..."
+calibre -drc -hier final_drc.cal
+if [ $? -ne 0 ]; then
+    echo "FINAL DRC FAILED"
+    exit 1
+fi
+
+# Step 7: Final LVS with Fill
+echo "Running Final LVS..."
+calibre -lvs -hier final_lvs.cal
+if [ $? -ne 0 ]; then
+    echo "FINAL LVS FAILED"
+    exit 1
+fi
+
+echo "=========================================="
+echo "PV SIGNOFF COMPLETE"
+echo "=========================================="</pre>
+
+    <h4>Signoff Checklist</h4>
+    <table>
+        <tr>
+            <th>Check</th>
+            <th>Tool</th>
+            <th>Pass Criteria</th>
+        </tr>
+        <tr>
+            <td>DRC</td>
+            <td>Calibre</td>
+            <td>0 violations</td>
+        </tr>
+        <tr>
+            <td>LVS</td>
+            <td>Calibre</td>
+            <td>CORRECT</td>
+        </tr>
+        <tr>
+            <td>ERC</td>
+            <td>Calibre</td>
+            <td>No floating nets</td>
+        </tr>
+        <tr>
+            <td>Antenna</td>
+            <td>Calibre</td>
+            <td>0 violations</td>
+        </tr>
+        <tr>
+            <td>Density</td>
+            <td>Calibre</td>
+            <td>Within limits</td>
+        </tr>
+        <tr>
+            <td>Timing</td>
+            <td>PrimeTime</td>
+            <td>WNS ≥ 0</td>
+        </tr>
+        <tr>
+            <td>IR Drop</td>
+            <td>RedHawk</td>
+            <td>&lt; 5% VDD</td>
+        </tr>
+    </table>
+
+    <div class="warning-box">
+        <h4>⚠️ Common Tapeout Issues</h4>
+        <ul>
+            <li>Missing seal ring or corner cells</li>
+            <li>IO pad spacing violations</li>
+            <li>Density violations after fill</li>
+            <li>Missing text labels for LVS</li>
+            <li>Wrong metal fill pattern near RF blocks</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="interview-box">
+        <h3>STA & PV Interview Questions</h3>
+        <ol>
+            <li><strong>What is the difference between set_false_path and set_multicycle_path?</strong> - False path ignores path completely; multicycle allows N cycles</li>
+            <li><strong>How do you debug hold violations?</strong> - Add delay buffers, check clock skew, verify CPPR</li>
+            <li><strong>What causes LVS shorts?</strong> - Metal overlap, via bridging, unintended connections</li>
+            <li><strong>What is antenna effect?</strong> - Charge accumulation during plasma etch damages gate oxide</li>
+            <li><strong>Why is metal fill needed?</strong> - CMP uniformity, density requirements, stress reduction</li>
+        </ol>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>You've completed the Physical Design blog series covering all major topics from floorplanning to signoff!</p>
+    <ul>
+        <li><strong><a href="e2e.html">End-to-End Flow</a></strong> - Complete RTL to GDSII project</li>
+        <li>Review previous chapters: <a href="index.html">Floorplanning</a>, <a href="routing.html">Routing</a>, <a href="clock-timing.html">Clock & Timing</a>, <a href="power.html">Power</a></li>
+    </ul>
+
+    <div class="blog-nav">
+        <a href="power.html">← Previous: Power-Aware Physical Design</a>
+        <a href="e2e.html">Next: End-to-End RTL to GDSII →</a>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#PhysicalDesign</span>
+        <span class="tag">#STA</span>
+        <span class="tag">#SDC</span>
+        <span class="tag">#DRC</span>
+        <span class="tag">#LVS</span>
+        <span class="tag">#Signoff</span>
+        <span class="tag">#VLSI</span>
+    </div>
+
+</div>
+
+<footer>
+    <p>Physical Design examples are for educational purposes. Verify with your foundry PDK.</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://vlsi-blog-counter-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const counterRef = ref(database, 'pd05Views');
+
+    runTransaction(counterRef, (currentValue) => {
+        if (currentValue === null) return 1000;
+        return currentValue + 1;
+    }).then((result) => {
+        document.getElementById('visit-count').textContent = result.snapshot.val();
+    }).catch((error) => {
+        document.getElementById('visit-count').textContent = '1000+';
+    });
+</script>
+
+</body>
+</html>

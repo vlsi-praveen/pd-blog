@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing & Signal Integrity Projects for Physical Design Engineers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .nav-bar {
+            background: #0f3460;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9em;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .nav-bar a.active {
+            font-weight: bold;
+            border-bottom: 2px solid #64B5F6;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0a2540 0%, #0f3460 50%, #1a5f8a 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .header-banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .header-banner .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .header-banner .meta {
+            margin-top: 20px;
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+        .view-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0a2540;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .view-counter span {
+            font-weight: bold;
+            color: #64B5F6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0a2540;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #0f3460;
+        }
+        h3 {
+            color: #0f3460;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+        }
+        h4 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0f3460;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .toc {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .toc h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .toc ol {
+            margin-left: 25px;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #0f3460;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .project-card {
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            border-left: 4px solid #0f3460;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .project-card h3 {
+            margin-top: 0;
+            color: #0f3460;
+        }
+        .interview-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .interview-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tip-box h4 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+        .tags {
+            margin-top: 30px;
+        }
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #0f3460;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85em;
+        }
+        .diagram {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        .blog-nav {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .blog-nav a {
+            color: #0f3460;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .blog-nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">01: Floorplan</a>
+    <a href="routing.html" class="active">02: Routing</a>
+    <a href="clock-timing.html">03: Clock & Timing</a>
+    <a href="power.html">04: Power</a>
+    <a href="sta-verification.html">05: STA & DRC/LVS</a>
+    <a href="e2e.html">06: End-to-End</a>
+</div>
+
+<div class="header-banner">
+    <h1>Routing & Signal Integrity Projects</h1>
+    <p class="subtitle">Master Global/Detailed Routing, Crosstalk & Antenna Fixes</p>
+    <p class="meta"><strong>Praveen Kumar Vagala</strong> | 22 min read</p>
+</div>
+
+<div class="view-counter">
+    Views: <span id="visit-count">1000</span>
+</div>
+
+<div class="container">
+
+    <h2>Introduction</h2>
+    <p>
+        Routing transforms the logical connectivity into physical metal connections. Signal integrity issues like crosstalk, IR drop, and antenna violations can make or break a design. This blog covers 5 essential routing projects that demonstrate mastery of these critical PD skills.
+    </p>
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#global-detail">Global and Detailed Routing for SPI Controller</a></li>
+            <li><a href="#congestion">Routing Congestion Analysis & Fixes</a></li>
+            <li><a href="#crosstalk">Crosstalk Analysis and Noise Fixing</a></li>
+            <li><a href="#antenna">Antenna Violation Detection & Fixing</a></li>
+            <li><a href="#timing-closure">Timing Closure for FIFO Module</a></li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <!-- Project 1: Global/Detailed Routing -->
+    <div class="project-card" id="global-detail">
+        <h3>1. Global and Detailed Routing for SPI Controller</h3>
+        <p><strong>Key Learning:</strong> Routing stages, layer assignment, via optimization</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>Routing Flow Overview</h4>
+    <div class="diagram">Placement Complete
+        ↓
+    Power Planning
+    (Rings, Stripes, Rails)
+        ↓
+    Global Routing
+    (Coarse routing, GCells)
+        ↓
+    Track Assignment
+    (Detailed layer assignment)
+        ↓
+    Detailed Routing
+    (Actual metal shapes)
+        ↓
+    Search & Repair
+    (DRC fixing)
+        ↓
+    Post-Route Optimization
+    (Timing/SI fixing)
+        ↓
+    Routing Signoff</div>
+
+    <h4>Complete Routing Script</h4>
+    <pre># Set routing mode
+setNanoRouteMode -quiet -routeWithTimingDriven true
+setNanoRouteMode -quiet -routeWithSiDriven true
+setNanoRouteMode -quiet -routeTdrEffort 5
+setNanoRouteMode -quiet -routeTopRoutingLayer 6
+setNanoRouteMode -quiet -routeBottomRoutingLayer 1
+
+# Non-default rules for clock nets
+add_ndr -name CTS_NDR -width {M3:M6 0.1} -spacing {M3:M6 0.1}
+setAttribute -net clk -non_default_rule CTS_NDR
+
+# Shielding for critical nets
+setAttribute -net {clk rst_n} -shield_net VSS
+
+# Global routing
+globalRoute -guide
+
+# Check global route congestion
+reportGlobalRouteResult > reports/global_route.rpt
+
+# Track assignment
+assignTracks
+
+# Detailed routing
+detailRoute -select all
+
+# Search and repair for DRC
+routeDesign -viaOpt
+
+# Post-route optimization
+setOptMode -fixDrc true
+setOptMode -fixFanoutLoad true
+optDesign -postRoute
+
+# Final DRC check
+verify_drc -report reports/drc_final.rpt
+
+# Report routing statistics
+reportRoute > reports/route_stats.rpt</pre>
+
+    <h4>Layer Assignment Strategy</h4>
+    <table>
+        <tr>
+            <th>Layer</th>
+            <th>Direction</th>
+            <th>Purpose</th>
+            <th>Width</th>
+        </tr>
+        <tr>
+            <td>M1</td>
+            <td>Horizontal</td>
+            <td>Local interconnects, std cell pins</td>
+            <td>0.07 µm</td>
+        </tr>
+        <tr>
+            <td>M2</td>
+            <td>Vertical</td>
+            <td>Local routing</td>
+            <td>0.07 µm</td>
+        </tr>
+        <tr>
+            <td>M3</td>
+            <td>Horizontal</td>
+            <td>Intermediate routing</td>
+            <td>0.07 µm</td>
+        </tr>
+        <tr>
+            <td>M4</td>
+            <td>Vertical</td>
+            <td>Semi-global, signal</td>
+            <td>0.1 µm</td>
+        </tr>
+        <tr>
+            <td>M5</td>
+            <td>Horizontal</td>
+            <td>Global routing, clock</td>
+            <td>0.2 µm</td>
+        </tr>
+        <tr>
+            <td>M6</td>
+            <td>Vertical</td>
+            <td>Power, clock trunks</td>
+            <td>0.4 µm</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- Project 2: Congestion Analysis -->
+    <div class="project-card" id="congestion">
+        <h3>2. Routing Congestion Analysis & Fixes</h3>
+        <p><strong>Key Learning:</strong> Congestion hotspots, overflow fixes, GCell analysis</p>
+        <p><strong>Tools:</strong> Innovus / ICC2</p>
+    </div>
+
+    <h4>Congestion Analysis Flow</h4>
+    <pre># Run congestion analysis
+globalRoute -guide
+reportCongestion -hotSpot -overflow > reports/congestion.rpt
+
+# GUI-based congestion map
+gui_show_congestion_map
+
+# Identify problematic areas
+proc analyze_congestion {} {
+    set overflows [dbGet top.nets.numVias -v]
+    set total_overflow 0
+    
+    foreach net [dbGet top.nets.name] {
+        set overflow [dbGet [dbGet top.nets.name $net -p].numViolations]
+        if {$overflow > 0} {
+            puts "Net: $net - Overflow: $overflow"
+            incr total_overflow $overflow
+        }
+    }
+    puts "Total overflow: $total_overflow"
+}
+
+# Congestion hotspot report
+reportCongestion -hotSpot 10 -overflow -direction horizontal
+reportCongestion -hotSpot 10 -overflow -direction vertical</pre>
+
+    <h4>Congestion Fixing Techniques</h4>
+    <table>
+        <tr>
+            <th>Problem</th>
+            <th>Solution</th>
+            <th>Command</th>
+        </tr>
+        <tr>
+            <td>Local hotspot</td>
+            <td>Cell spreading</td>
+            <td><code>refinePlace -preserveRouting false</code></td>
+        </tr>
+        <tr>
+            <td>Global overflow</td>
+            <td>Increase channel</td>
+            <td>Adjust floorplan</td>
+        </tr>
+        <tr>
+            <td>Macro blockage</td>
+            <td>Add routing blockage</td>
+            <td><code>createRouteBlk</code></td>
+        </tr>
+        <tr>
+            <td>High-fanout net</td>
+            <td>Buffer tree</td>
+            <td><code>optDesign -highFanout</code></td>
+        </tr>
+        <tr>
+            <td>Layer imbalance</td>
+            <td>Non-default rules</td>
+            <td><code>add_ndr</code></td>
+        </tr>
+    </table>
+
+    <h4>Congestion Fix Script</h4>
+    <pre># Identify and fix congested areas
+proc fix_congestion {threshold} {
+    # Get congested GCells
+    set congested [getCongestion -threshold $threshold]
+    
+    foreach gcell $congested {
+        set x [lindex $gcell 0]
+        set y [lindex $gcell 1]
+        
+        # Create soft blockage to reduce density
+        set box "[expr $x - 10] [expr $y - 10] [expr $x + 10] [expr $y + 10]"
+        createDensityArea -name congfix_$x_$y -box $box -density 0.5
+        
+        puts "Created density area at ($x, $y)"
+    }
+}
+
+# Spread cells in congested regions
+ecoPlace -mode refine
+
+# Re-run global route
+globalRoute -guide
+
+# Verify improvement
+reportCongestion -hotSpot > reports/congestion_after.rpt</pre>
+
+    <div class="warning-box">
+        <h4>⚠️ Common Congestion Causes</h4>
+        <ul>
+            <li><strong>High utilization:</strong> Target 70-75% for routability</li>
+            <li><strong>Macro channels:</strong> Insufficient space between macros</li>
+            <li><strong>Pin density:</strong> Too many pins in small area</li>
+            <li><strong>Bus routing:</strong> Wide buses causing local congestion</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <!-- Project 3: Crosstalk -->
+    <div class="project-card" id="crosstalk">
+        <h3>3. Crosstalk Analysis and Noise Fixing</h3>
+        <p><strong>Key Learning:</strong> SI analysis, coupling capacitance, noise mitigation</p>
+        <p><strong>Tools:</strong> Innovus SI / PrimeTime SI</p>
+    </div>
+
+    <h4>Crosstalk Fundamentals</h4>
+    <div class="diagram">Aggressor Net (Switching)
+    ═══════════════════════════════════
+           ║   Coupling    ║
+           ║  Capacitance  ║
+           ▼      Cc       ▼
+    ───────────────────────────────────
+    Victim Net (Affected)
+
+    Noise Types:
+    1. Glitch (functional failure)
+    2. Delta Delay (timing failure)
+
+    Noise Voltage = (Cc / (Cc + Cg)) × Vswing</div>
+
+    <h4>SI Analysis Script</h4>
+    <pre># Enable SI-aware routing
+setNanoRouteMode -routeWithSiDriven true
+setNanoRouteMode -routeWithSiPostRouteFix true
+
+# Set SI thresholds
+setSiMode -analyzeNoiseThreshold 0.3
+setSiMode -deltaDelayThreshold 0.1
+setSiMode -maxNoiseBudget 0.4
+
+# Run SI analysis
+signalIntegrity -report reports/si_analysis.rpt
+
+# Detailed crosstalk report
+report_noise -above 0.2 > reports/noise_victims.rpt
+report_si_double_switching > reports/double_switch.rpt
+
+# Identify worst offenders
+proc report_crosstalk_victims {} {
+    set victims [getSiVictims -threshold 0.3]
+    foreach v $victims {
+        set net [lindex $v 0]
+        set noise [lindex $v 1]
+        puts "Victim: $net, Noise: $noise V"
+    }
+}</pre>
+
+    <h4>Crosstalk Fixing Techniques</h4>
+    <table>
+        <tr>
+            <th>Technique</th>
+            <th>Effectiveness</th>
+            <th>Impact</th>
+        </tr>
+        <tr>
+            <td>Wire spacing</td>
+            <td>High</td>
+            <td>Reduces Cc quadratically</td>
+        </tr>
+        <tr>
+            <td>Shielding</td>
+            <td>Very High</td>
+            <td>Adds routing resources</td>
+        </tr>
+        <tr>
+            <td>Layer change</td>
+            <td>Medium</td>
+            <td>Adds vias</td>
+        </tr>
+        <tr>
+            <td>Buffer insertion</td>
+            <td>Medium</td>
+            <td>Strengthens driver</td>
+        </tr>
+        <tr>
+            <td>Net reordering</td>
+            <td>Low-Medium</td>
+            <td>Changes timing</td>
+        </tr>
+    </table>
+
+    <h4>Crosstalk Fix Script</h4>
+    <pre># Fix crosstalk violations
+fixSI -preroute
+
+# Shield critical nets
+proc shield_critical_nets {} {
+    set critical_nets {clk rst_n data_valid}
+    
+    foreach net $critical_nets {
+        setAttribute -net $net -shield_net VSS
+        setAttribute -net $net -shield_left_side true
+        setAttribute -net $net -shield_right_side true
+    }
+}
+
+# Increase spacing for noisy nets
+proc fix_noisy_nets {threshold} {
+    set noisy [getSiVictims -threshold $threshold]
+    
+    foreach victim $noisy {
+        set net [lindex $victim 0]
+        # Double the spacing for this net
+        setAttribute -net $net -spacing_multiplier 2
+    }
+    
+    # Re-route affected nets
+    detailRoute -select {noisy nets}
+}
+
+# Add NDR for sensitive nets
+add_ndr -name SI_FIX -spacing {M2:M5 0.14}
+setAttribute -net {sensitive_*} -non_default_rule SI_FIX
+
+# Re-run SI analysis
+signalIntegrity -report reports/si_after_fix.rpt</pre>
+
+    <hr>
+
+    <!-- Project 4: Antenna -->
+    <div class="project-card" id="antenna">
+        <h3>4. Antenna Violation Detection & Fixing</h3>
+        <p><strong>Key Learning:</strong> Antenna effect, diode insertion, jumper routing</p>
+        <p><strong>Tools:</strong> Innovus / Calibre</p>
+    </div>
+
+    <h4>Antenna Effect Explained</h4>
+    <div class="diagram">During Manufacturing (Plasma Etching):
+                                    
+    Long Metal Trace              Gate Oxide
+    ══════════════════════════════════╗
+    Charge accumulates →              ║
+    on metal during etch              ║ Gate
+                                      ║ Damage!
+    ══════════════════════════════════╝
+                                      
+    Antenna Ratio = Metal Area / Gate Area
+    
+    If Antenna Ratio > Limit → Gate Oxide Damage
+
+    Solutions:
+    1. Add protection diodes
+    2. Break long wires (jumper to higher layer)
+    3. Route on higher layers first</div>
+
+    <h4>Antenna Analysis Script</h4>
+    <pre># Run antenna analysis
+verifyProcessAntenna -report reports/antenna.rpt
+
+# Detailed antenna report
+proc analyze_antenna_violations {} {
+    set violations [dbGet top.nets.antenna_violation -v 1 -p]
+    
+    foreach viol $violations {
+        set net [dbGet $viol.name]
+        set ratio [dbGet $viol.antenna_ratio]
+        set layer [dbGet $viol.antenna_layer]
+        set gate_area [dbGet $viol.gate_area]
+        
+        puts "Net: $net"
+        puts "  Layer: $layer"
+        puts "  Ratio: $ratio (Limit: $limit)"
+        puts "  Gate Area: $gate_area"
+    }
+}
+
+# Report by layer
+report_antenna -by_layer > reports/antenna_by_layer.rpt</pre>
+
+    <h4>Antenna Fixing Methods</h4>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+            <th>When to Use</th>
+        </tr>
+        <tr>
+            <td>Diode Insertion</td>
+            <td>Add protection diode near gate</td>
+            <td>Preferred method, always works</td>
+        </tr>
+        <tr>
+            <td>Jumper Insertion</td>
+            <td>Break wire, jump to higher layer</td>
+            <td>When diode area is limited</td>
+        </tr>
+        <tr>
+            <td>Layer Hopping</td>
+            <td>Route on higher layers first</td>
+            <td>During initial routing</td>
+        </tr>
+        <tr>
+            <td>Wire Splitting</td>
+            <td>Break long wires with buffers</td>
+            <td>Also fixes timing</td>
+        </tr>
+    </table>
+
+    <h4>Antenna Fix Script</h4>
+    <pre># Set antenna rules from tech file
+setAntennaRule -layer M1 -ratio 400
+setAntennaRule -layer M2 -ratio 400
+setAntennaRule -layer M3 -ratio 400
+setAntennaRule -layer M4 -ratio 800
+
+# Automatic antenna fixing with diodes
+setNanoRouteMode -routeAntennaCellName "ANTENNA_X1"
+setNanoRouteMode -routeInsertAntennaDiode true
+
+# Fix existing violations
+fixAntenna -diode -cell ANTENNA_X1
+
+# Alternative: Jumper-based fixing
+proc fix_antenna_jumper {net} {
+    # Route net to higher layer before gate
+    setNanoRouteMode -routeBottomRoutingLayer M3
+    detailRoute -net $net
+}
+
+# Verify fixes
+verifyProcessAntenna -report reports/antenna_post_fix.rpt
+
+# Report remaining violations
+set remaining [dbGet top.nets.antenna_violation -v 1 -p -e]
+puts "Remaining antenna violations: [llength $remaining]"</pre>
+
+    <div class="tip-box">
+        <h4>💡 Antenna Prevention Tips</h4>
+        <ul>
+            <li>Enable antenna-aware routing from the start</li>
+            <li>Route clock and critical nets on higher layers</li>
+            <li>Reserve diode sites during placement</li>
+            <li>Use foundry-recommended antenna cells</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <!-- Project 5: Timing Closure -->
+    <div class="project-card" id="timing-closure">
+        <h3>5. Timing Closure for FIFO Module</h3>
+        <p><strong>Key Learning:</strong> Post-route timing, RC extraction, ECO fixes</p>
+        <p><strong>Tools:</strong> Innovus / PrimeTime</p>
+    </div>
+
+    <h4>Timing Closure Flow</h4>
+    <div class="diagram">Post-Route Design
+        ↓
+    RC Extraction (SPEF)
+        ↓
+    Timing Analysis
+        ↓
+    ┌────────┴────────┐
+    │  Setup/Hold     │
+    │  Violations?    │
+    └────────┬────────┘
+         Yes │
+             ↓
+    ┌─────────────────┐
+    │  ECO Fixes      │
+    │  - Buffer       │
+    │  - Resize       │
+    │  - Reroute      │
+    └────────┬────────┘
+             ↓
+    Incremental Route
+        ↓
+    Re-extract & Verify
+        ↓
+    Timing Signoff</div>
+
+    <h4>Post-Route Timing Analysis</h4>
+    <pre># Extract parasitics
+setExtractRCMode -engine postRoute -coupled true
+extractRC
+
+# Write SPEF for PrimeTime
+rcOut -spef design.spef -rc_corner typical
+
+# Timing analysis
+setAnalysisMode -analysisType onChipVariation
+setAnalysisMode -cppr both
+timeDesign -postRoute -hold -outDir reports/timing_hold
+timeDesign -postRoute -setup -outDir reports/timing_setup
+
+# Report worst paths
+report_timing -max_paths 50 -slack_lesser_than 0 \
+    > reports/setup_violations.rpt
+report_timing -max_paths 50 -slack_lesser_than 0 -early \
+    > reports/hold_violations.rpt
+
+# Analyze critical paths
+proc analyze_critical_path {num_paths} {
+    set paths [get_timing_paths -max_paths $num_paths]
+    foreach path $paths {
+        puts "Slack: [get_property $path slack]"
+        puts "  Start: [get_property $path startpoint]"
+        puts "  End: [get_property $path endpoint]"
+        puts "  Stages: [get_property $path logic_levels]"
+    }
+}</pre>
+
+    <h4>ECO Timing Fixes</h4>
+    <pre># Setup violation fixes
+setOptMode -fixSetupViolation true
+setOptMode -maxDensity 0.85
+
+# Optimize setup
+optDesign -postRoute -setup
+
+# Hold violation fixes
+setOptMode -fixHoldViolation true
+setOptMode -holdTargetSlack 0.05
+
+# Fix hold with buffer insertion
+optDesign -postRoute -hold
+
+# Manual ECO for stubborn violations
+proc eco_fix_setup {path_id} {
+    set path [get_timing_paths -id $path_id]
+    set slow_cell [get_worst_cell $path]
+    
+    # Size up the critical cell
+    ecoChangeCell -inst $slow_cell -cell [get_faster_variant $slow_cell]
+}
+
+proc eco_fix_hold {from_pin to_pin} {
+    # Insert hold buffer
+    ecoAddRepeater -term $to_pin -cell BUFX4 -name hold_fix_buf
+}
+
+# Incremental routing for ECO
+setNanoRouteMode -routeWithEco true
+detailRoute -select eco
+
+# Final verification
+timeDesign -postRoute -signOff
+verify_drc</pre>
+
+    <h4>Common Timing Issues & Fixes</h4>
+    <table>
+        <tr>
+            <th>Issue</th>
+            <th>Root Cause</th>
+            <th>Fix</th>
+        </tr>
+        <tr>
+            <td>Setup violation</td>
+            <td>Long data path</td>
+            <td>Resize cells, add buffers</td>
+        </tr>
+        <tr>
+            <td>Hold violation</td>
+            <td>Short data path</td>
+            <td>Add delay buffers</td>
+        </tr>
+        <tr>
+            <td>Clock skew</td>
+            <td>Unbalanced CTS</td>
+            <td>Re-balance clock tree</td>
+        </tr>
+        <tr>
+            <td>Transition violation</td>
+            <td>Weak driver</td>
+            <td>Upsize driver</td>
+        </tr>
+        <tr>
+            <td>Crosstalk delay</td>
+            <td>Coupling capacitance</td>
+            <td>Spacing, shielding</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div class="interview-box">
+        <h3>Routing & SI Interview Questions</h3>
+        <ol>
+            <li><strong>What is the difference between global and detailed routing?</strong> - Global plans paths through GCells; detailed creates actual metal shapes</li>
+            <li><strong>How do you fix routing congestion?</strong> - Cell spreading, channel widening, layer optimization, NDR</li>
+            <li><strong>What causes crosstalk?</strong> - Coupling capacitance between adjacent wires</li>
+            <li><strong>How do you fix antenna violations?</strong> - Diode insertion, jumper to higher layer, wire splitting</li>
+            <li><strong>What is the routing closure flow?</strong> - Route → Extract → Time → ECO → Re-route → Signoff</li>
+        </ol>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Continue your Physical Design journey with the complete blog series:</p>
+    <ul>
+        <li><strong>Clock & Timing</strong> - CTS, timing closure, ECO fixes</li>
+        <li><strong>Power-Aware PD</strong> - Power grid, IR drop, multi-voltage</li>
+        <li><strong>STA & Verification</strong> - SDC, DRC/LVS debugging</li>
+        <li><strong>End-to-End Flow</strong> - Complete RTL to GDSII project (Coming Soon)</li>
+    </ul>
+
+    <div class="blog-nav">
+        <a href="index.html">← Previous: Floorplanning & Placement</a>
+        <a href="clock-timing.html">Next: Clock & Timing →</a>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#PhysicalDesign</span>
+        <span class="tag">#Routing</span>
+        <span class="tag">#SignalIntegrity</span>
+        <span class="tag">#Crosstalk</span>
+        <span class="tag">#Antenna</span>
+        <span class="tag">#TimingClosure</span>
+        <span class="tag">#VLSI</span>
+    </div>
+
+</div>
+
+<footer>
+    <p>Physical Design examples are for educational purposes. Verify with your foundry PDK.</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        databaseURL: "https://vlsi-blog-counter-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const counterRef = ref(database, 'pd02Views');
+
+    runTransaction(counterRef, (currentValue) => {
+        if (currentValue === null) return 1000;
+        return currentValue + 1;
+    }).then((result) => {
+        document.getElementById('visit-count').textContent = result.snapshot.val();
+    }).catch((error) => {
+        document.getElementById('visit-count').textContent = '1000+';
+    });
+</script>
+
+</body>
+</html>
