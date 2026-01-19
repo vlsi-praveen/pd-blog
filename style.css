@@ -15,54 +15,44 @@ body {
 
 .header {
     background: linear-gradient(90deg, #0f3460, #533483);
-    padding: 20px 0;
+    padding: 40px 20px;
+    text-align: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
 }
 
 .header h1 {
     color: #00d4ff;
-    font-size: 1.8em;
+    font-size: 2.5em;
+    margin-bottom: 10px;
 }
 
-.header h1 a {
+.header p {
+    color: #aaa;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.header .author {
+    color: #888;
+}
+
+.intro {
+    background: linear-gradient(135deg, #1a2a4a 0%, #0d1525 100%);
+    border: 2px solid #2a3f5f;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.intro h2 {
     color: #00d4ff;
-    text-decoration: none;
+    margin-bottom: 15px;
 }
 
-.header h1 a:hover {
-    text-shadow: 0 0 10px #00d4ff;
-}
-
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links a {
-    color: #00d4ff;
-    text-decoration: none;
-    padding: 8px 16px;
-    border: 1px solid #2a3f5f;
-    border-radius: 5px;
-    transition: all 0.3s;
-}
-
-.nav-links a:hover {
-    background: #00d4ff;
-    color: #1a1a2e;
+.intro p {
+    color: #aaa;
+    line-height: 1.8;
 }
 
 .container {
