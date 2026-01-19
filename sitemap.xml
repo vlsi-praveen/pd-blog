@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/</loc><priority>1.0</priority></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/01_pd_introduction.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/02_floorplanning.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/03_placement.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/04_cts.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/05_routing.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/06_sta.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/07_timing_closure.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/08_power_analysis.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/09_physical_verification.html</loc></url>
+  <url><loc>https://vlsi-praveen.github.io/pd-blog/10_signoff.html</loc></url>
+</urlset>
